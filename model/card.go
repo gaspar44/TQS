@@ -2,15 +2,13 @@ package model
 
 type Card struct {
 	isVisible bool
-	image     []byte
 	value     int
 }
 
-func NewCard() *Card {
+func NewCard(assignedValue int) *Card {
 	return &Card{
 		isVisible: false,
-		image:     nil,
-		value:     0,
+		value:     assignedValue,
 	}
 }
 
@@ -18,15 +16,10 @@ func (c *Card) GetVisibility() bool {
 	return c.isVisible
 }
 
-func (c *Card) GetImage() []byte {
-	return c.image
-}
-
 func (c *Card) GetValue() int {
 	return c.value
 }
 
 func (c *Card) Click() {
-	// TODO: pending more logic
 	c.isVisible = !c.isVisible
 }
