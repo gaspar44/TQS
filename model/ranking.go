@@ -7,6 +7,11 @@ import (
 	"sync"
 )
 
+var (
+	lock     = &sync.Mutex{}
+	instance *Ranking
+)
+
 type Ranking struct {
 	Players *[]Player
 	Storage storage.StorageHandler
@@ -15,11 +20,6 @@ type Ranking struct {
 func (r *Ranking) Write() error {
 	return r.Storage.WriteRanking()
 }
-
-var (
-	lock     = &sync.Mutex{}
-	instance *Ranking
-)
 
 func GetRankingInstance(storage storage.StorageHandler) (*Ranking, error) {
 	if instance == nil {

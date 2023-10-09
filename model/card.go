@@ -27,5 +27,6 @@ func (c *Card) GetValue() int {
 }
 
 func (c *Card) Click() {
+	// TODO: pending more logic
 	c.isVisible = !c.isVisible
 }
