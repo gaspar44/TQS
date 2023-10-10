@@ -110,8 +110,9 @@ func TestGetRankingInstanceMultithreading(t *testing.T) {
 	var wg sync.WaitGroup
 
 	for i := 0; i < len(rankings); i++ {
+		wg.Add(1)
 		go func(position int) {
-			wg.Add(1)
+
 			defer wg.Done()
 			ranking, err := GetRankingInstance()
 			assert.Nil(err)
