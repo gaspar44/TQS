@@ -15,7 +15,6 @@ func (g *Game) ChooseCard() {
 func NewGame(playerName string, gameDifficulty Difficulty) *Game {
 	// TODO: start the timer and initialize the remaining stuff
 
-	//ranking := GetRankingInstance()
 	return &Game{
 		playerName:   playerName,
 		cards:        nil,

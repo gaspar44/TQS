@@ -1,4 +1,6 @@
-package errors
+package custom_errors
+
+import "errors"
 
 type RankingInitializationError struct {
 	internalError error
@@ -6,6 +8,10 @@ type RankingInitializationError struct {
 
 func NewRankingInitializationError(err error) *RankingInitializationError {
 	return &RankingInitializationError{internalError: err}
+}
+
+func NewRankingInitializationErrorWithMessage() *RankingInitializationError {
+	return &RankingInitializationError{internalError: errors.New(RankingInitializationErrorMessage)}
 }
 
 func (err *RankingInitializationError) Error() string {

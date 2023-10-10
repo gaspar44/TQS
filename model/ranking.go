@@ -1,9 +1,7 @@
 package model
 
 import (
-	"fmt"
-	"gaspar44/TQS/model/errors"
-	"gaspar44/TQS/storage"
+	"gaspar44/TQS/model/custom_errors"
 	"sync"
 )
 
@@ -13,37 +11,50 @@ var (
 )
 
 type Ranking struct {
-	Players *[]Player
-	Storage storage.StorageHandler
+	Players       *[]Player
+	isInitialized bool
 }
 
-func (r *Ranking) Write() error {
-	return r.Storage.WriteRanking()
+func (r *Ranking) GetPlayers() (*[]Player, error) {
+	if r.Players == nil {
+		return nil, custom_errors.NewRankingInitializationErrorWithMessage()
+	}
+
+	return r.Players, nil
 }
 
-func GetRankingInstance(storage storage.StorageHandler) (*Ranking, error) {
+func (r *Ranking) SetPlayers(players *[]Player) {
+	if !instance.isInitialized {
+		lock.Lock()
+		defer lock.Unlock()
+
+		if !instance.isInitialized {
+			instance.Players = players
+			instance.isInitialized = true
+		}
+	}
+}
+
+func (r *Ranking) release() {
+	if instance != nil {
+		lock.Lock()
+		defer lock.Unlock()
+
+		if instance != nil {
+			instance = nil
+		}
+	}
+}
+
+func GetRankingInstance() (*Ranking, error) {
 	if instance == nil {
 		lock.Lock()
 		defer lock.Unlock()
 
 		if instance == nil {
-			readBytes, err := storage.ReadRanking()
-
-			if err != nil {
-				return nil, errors.NewRankingInitializationError(err)
-			}
-
-			players := convertToPlayers(readBytes)
-			instance = &Ranking{Storage: storage,
-				Players: players}
+			instance = &Ranking{isInitialized: false,
+				Players: nil}
 		}
 	}
-
 	return instance, nil
-}
-
-func convertToPlayers(readBytes []byte) *[]Player {
-	// TODO
-	fmt.Print(readBytes)
-	return nil
 }

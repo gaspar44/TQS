@@ -1,6 +1,8 @@
 package storage
 
+import "gaspar44/TQS/model"
+
 type StorageHandler interface {
-	ReadRanking() ([]byte, error)
+	ReadRanking() (*model.Ranking, error)
 	WriteRanking() error
 }
