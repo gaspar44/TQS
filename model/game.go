@@ -1,5 +1,6 @@
 package model
 
+//////////////////////////////////////////////////////////////////////////
 type Game struct {
 	cards        *[]Card
 	Ranking      *Ranking
@@ -8,10 +9,18 @@ type Game struct {
 	selectedCard int
 }
 
+//////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////
+// Function to choose a board card
 func (g *Game) ChooseCard() {
 	// TODO
 }
 
+//////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////
+// Function to create/inizialate a Game
 func NewGame(playerName string, gameDifficulty Difficulty) *Game {
 	// TODO: start the timer and initialize the remaining stuff
 
@@ -24,6 +33,30 @@ func NewGame(playerName string, gameDifficulty Difficulty) *Game {
 	}
 }
 
-func createCards(difficulty Difficulty) *[]Card {
-	return nil
+//////////////////////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////////////////////
+// Function to create cards
+func createCards(game *Game, difficulty Difficulty) {
+
+	switch difficulty {
+	case Easy:
+		for i := 1; i <= 5; i++ {
+			newCard := NewCard(i)
+			game.cards = append(game.cards, newCard)
+		}
+	case Medium:
+		for i := 1; i <= 10; i++ {
+			newCard := NewCard(i)
+			game.cards = append(game.cards, newCard)
+		}
+	case Hard:
+		for i := 1; i <= 15; i++ {
+			newCard := NewCard(i)
+			game.cards = append(game.cards, newCard)
+		}
+	}
+
 }
+
+//////////////////////////////////////////////////////////////////////////
