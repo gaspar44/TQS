@@ -6,19 +6,35 @@ import (
 	assert2 "github.com/stretchr/testify/assert"
 )
 
-func TestNewGame(t *testing.T) {
-	// Initialization of assert and playername
-	print("Initialization of assert and player name...")
+func TestNewGameEasyMode(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
 
-	// Checking initialization of game
-	print("Checking game...")
 	game := NewGame(playerName, Easy)
 	assert.Equal(playerName, game.playerName)
+	assert.Equal(easyDifficultyCardsTotal, len(game.cards))
 	assert.Equal(0, game.timer)
 	assert.Equal(-1, game.selectedCard)
+}
 
-	print("End of card test!")
-	// Missing: Display tests passed, cards assignation (?)
+func TestNewGameMediumMode(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game := NewGame(playerName, Medium)
+	assert.Equal(playerName, game.playerName)
+	assert.Equal(mediumDifficultyCardsTotal, len(game.cards))
+	assert.Equal(0, game.timer)
+	assert.Equal(-1, game.selectedCard)
+}
+
+func TestNewGameHardMode(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game := NewGame(playerName, Hard)
+	assert.Equal(playerName, game.playerName)
+	assert.Equal(HardDifficultyCardsTotal, len(game.cards))
+	assert.Equal(0, game.timer)
+	assert.Equal(-1, game.selectedCard)
 }

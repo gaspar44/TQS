@@ -1,27 +1,19 @@
 package model
 
-//////////////////////////////////////////////////////////////
 type Card struct {
 	// Info about the card (visibility and value)
 	isVisible bool
 	value     int
 }
 
-//////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////
 // Constructor
-func NewCard(assignedValue int) *Card {
-	// To assign default card value value
-	return &Card{
+func NewCard(assignedValue int) Card {
+	return Card{
 		isVisible: false,
 		value:     assignedValue,
 	}
 }
 
-//////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////
 // Getters
 func (c *Card) GetVisibility() bool {
 	// To get card visibility
@@ -33,33 +25,21 @@ func (c *Card) GetValue() int {
 	return c.value
 }
 
-//////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////
 // Setters
 func (c *Card) SetVisibility(assignedVisibility bool) {
-	// To set card visibility
 	c.isVisible = assignedVisibility
 }
 
-func (c *Card) SetValue(assignedvalue int) {
-	// To set card value
-	c.value = assignedvalue
+func (c *Card) SetValue(assignedValue int) {
+	c.value = assignedValue
 }
 
-//////////////////////////////////////////////////////////////
-
-//////////////////////////////////////////////////////////////
 // Functions:
 
-// To click a card
 func (c *Card) Click() {
 	// Missing:
 	// Check if card is already matched with another
 	if c.isVisible != true {
 		c.isVisible = !c.isVisible
 	}
-
 }
-
-//////////////////////////////////////////////////////////////
