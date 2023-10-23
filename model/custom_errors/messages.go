@@ -1,5 +1,6 @@
 package custom_errors
 
 const (
-	RankingInitializationErrorMessage = "Ranking not initialized"
+	RankingInitializationErrorMessage  = "Ranking not initialized"
+	GameAlreadyInitializedErrorMessage = "Game already initialized"
 )
