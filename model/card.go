@@ -3,6 +3,7 @@ package model
 type Card struct {
 	// Info about the card (visibility and value)
 	isVisible bool
+	isDisable bool
 	value     int
 }
 
@@ -10,6 +11,7 @@ type Card struct {
 func NewCard(assignedValue int) Card {
 	return Card{
 		isVisible: false,
+		isDisable: false,
 		value:     assignedValue,
 	}
 }
