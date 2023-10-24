@@ -9,7 +9,7 @@ type InvalidCardPositionError struct {
 func NewInvalidPositionError(position int) *InvalidCardPositionError {
 	stringPosition := strconv.Itoa(position)
 	return &InvalidCardPositionError{
-		message: GameAlreadyInitializedErrorMessage + stringPosition,
+		message: InvalidCardPositionErrorMessage + stringPosition,
 	}
 }
 func (err *InvalidCardPositionError) Error() string {
