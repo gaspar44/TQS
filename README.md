@@ -14,5 +14,5 @@ The Golang language, by convention, to execute unit/integration tests, needs to 
 
 The project's structure will be the one used at [Go's project layout](https://github.com/golang-standards/project-layout), but with some modifications to use the MVC pattern.
 
-## TestCoverage
+## Test Coverage
 https://blog.friendsofgo.tech/posts/tests-coverage-en-go/

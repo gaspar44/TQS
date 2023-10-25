@@ -154,7 +154,7 @@ func TestGameHardModeShuffle(t *testing.T) {
 	assert.True(checkCardsOrder(actualCards, shuffledCards))
 }
 
-func TestGameEasyModeChooseCard(t *testing.T) {
+func TestGameEasyModeSingleChooseCard(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
 
@@ -175,6 +175,237 @@ func TestGameEasyModeChooseCard(t *testing.T) {
 	newSelectedCard := game.selectedCard
 
 	assert.NotEqual(newSelectedCard, previousSelectedCard)
+}
+
+func TestGameMediumModeSingleChooseCard(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Medium)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.True(game.initialized)
+	assert.Equal(mediumDifficultyCardsTotal, len(game.GetCards()))
+	assert.Equal(0, game.timer)
+	assert.Equal(-1, game.selectedCard.Card.value)
+	assert.False(game.selectedCard.Card.isVisible)
+	assert.False(game.selectedCard.Card.isDisable)
+	assert.Equal(-1, game.selectedCard.Position)
+
+	previousSelectedCard := game.selectedCard
+	err = game.ChooseCardOnBoard(4)
+	assert.Nil(err)
+	newSelectedCard := game.selectedCard
+	assert.NotEqual(newSelectedCard, previousSelectedCard)
+}
+
+func TestGameEasyModeSameCardChose(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Easy)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.True(game.initialized)
+	assert.Equal(easyDifficultyCardsTotal, len(game.GetCards()))
+	assert.Equal(0, game.timer)
+	assert.Equal(-1, game.selectedCard.Card.value)
+	assert.Equal(-1, game.selectedCard.Position)
+
+	err = game.ChooseCardOnBoard(0)
+	assert.Nil(err)
+	newSelectedCard := game.selectedCard
+	err = game.ChooseCardOnBoard(0)
+	assert.Equal(newSelectedCard, game.selectedCard)
+}
+
+func TestGameMediumModeSameCardChose(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Medium)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.True(game.initialized)
+	assert.Equal(mediumDifficultyCardsTotal, len(game.GetCards()))
+	assert.Equal(0, game.timer)
+	assert.Equal(-1, game.selectedCard.Card.value)
+	assert.Equal(-1, game.selectedCard.Position)
+
+	err = game.ChooseCardOnBoard(1)
+	assert.Nil(err)
+	newSelectedCard := game.selectedCard
+	err = game.ChooseCardOnBoard(1)
+	assert.Equal(newSelectedCard, game.selectedCard)
+}
+
+func TestGameHardModeSameCardChose(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Hard)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.True(game.initialized)
+	assert.Equal(hardDifficultyCardsTotal, len(game.GetCards()))
+	assert.Equal(0, game.timer)
+	assert.Equal(-1, game.selectedCard.Card.value)
+	assert.Equal(-1, game.selectedCard.Position)
+
+	err = game.ChooseCardOnBoard(2)
+	assert.Nil(err)
+	newSelectedCard := game.selectedCard
+	err = game.ChooseCardOnBoard(2)
+	assert.Equal(newSelectedCard, game.selectedCard)
+}
+
+func TestGameHardModeSingleChooseCard(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Hard)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.True(game.initialized)
+	assert.Equal(hardDifficultyCardsTotal, len(game.GetCards()))
+	assert.Equal(0, game.timer)
+	assert.Equal(-1, game.selectedCard.Card.value)
+	assert.False(game.selectedCard.Card.isVisible)
+	assert.False(game.selectedCard.Card.isDisable)
+	assert.Equal(-1, game.selectedCard.Position)
+
+	previousSelectedCard := game.selectedCard
+	err = game.ChooseCardOnBoard(4)
+	assert.Nil(err)
+	newSelectedCard := game.selectedCard
+
+	assert.NotEqual(newSelectedCard, previousSelectedCard)
+}
+
+func TestGameEasyModeWrongCardChose(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Easy)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.Equal(0, game.timer)
+	assert.Equal(easyDifficultyCardsTotal, len(game.GetCards()))
+
+	hackedCardList := createCards(Easy)
+	game.cards = hackedCardList // Only to obtain a card list. Only because it's go's testing, we can access and modify private attributes
+
+	assert.Equal(-1, game.selectedCard.Card.value)
+	assert.False(game.selectedCard.Card.isVisible)
+	assert.False(game.selectedCard.Card.isDisable)
+	assert.Equal(-1, game.selectedCard.Position)
+
+	previousSelectedCard := game.selectedCard
+	err = game.ChooseCardOnBoard(0)
+	assert.Nil(err)
+	newSelectedCard := game.selectedCard
+	assert.NotEqual(newSelectedCard, previousSelectedCard)
+
+	previousSelectedCard = game.selectedCard
+	err = game.ChooseCardOnBoard(4)
+	assert.Nil(err)
+	newSelectedCard = game.selectedCard
+	assert.NotEqual(newSelectedCard, previousSelectedCard)
+	assert.GreaterOrEqual(easyDifficultyPenalization, game.timer)
+}
+
+func TestGameMediumModeWrongCardChose(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Medium)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.Equal(0, game.timer)
+	assert.Equal(mediumDifficultyCardsTotal, len(game.GetCards()))
+
+	hackedCardList := createCards(Medium)
+	game.cards = hackedCardList // Only to obtain a card list. Only because it's go's testing, we can access and modify private attributes
+
+	assert.Equal(-1, game.selectedCard.Card.value)
+	assert.False(game.selectedCard.Card.isVisible)
+	assert.False(game.selectedCard.Card.isDisable)
+	assert.Equal(-1, game.selectedCard.Position)
+
+	previousSelectedCard := game.selectedCard
+	err = game.ChooseCardOnBoard(0)
+	assert.Nil(err)
+	newSelectedCard := game.selectedCard
+	assert.NotEqual(newSelectedCard, previousSelectedCard)
+
+	previousSelectedCard = game.selectedCard
+	err = game.ChooseCardOnBoard(5)
+	assert.Nil(err)
+	newSelectedCard = game.selectedCard
+	assert.NotEqual(newSelectedCard, previousSelectedCard)
+	assert.GreaterOrEqual(mediumDifficultyPenalization, game.timer)
+}
+
+func TestGameHardModeWrongCardChose(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Hard)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.Equal(0, game.timer)
+	assert.Equal(hardDifficultyCardsTotal, len(game.GetCards()))
+
+	hackedCardList := createCards(Hard)
+	game.cards = hackedCardList // Only to obtain a card list. Only because it's go's testing, we can access and modify private attributes
+
+	assert.Equal(-1, game.selectedCard.Card.value)
+	assert.False(game.selectedCard.Card.isVisible)
+	assert.False(game.selectedCard.Card.isDisable)
+	assert.Equal(-1, game.selectedCard.Position)
+
+	previousSelectedCard := game.selectedCard
+	err = game.ChooseCardOnBoard(0)
+	assert.Nil(err)
+	newSelectedCard := game.selectedCard
+	assert.NotEqual(newSelectedCard, previousSelectedCard)
+
+	previousSelectedCard = game.selectedCard
+	err = game.ChooseCardOnBoard(5)
+	assert.Nil(err)
+	newSelectedCard = game.selectedCard
+	assert.NotEqual(newSelectedCard, previousSelectedCard)
+	assert.GreaterOrEqual(hardDifficultyPenalization, game.timer)
+}
+
+func createCards(difficulty Difficulty) []Card {
+	cards := make([]Card, 0)
+
+	switch difficulty {
+	case Easy:
+		for i := 0; i < easyDifficultyCardsTotal/2; i++ {
+			newCard := NewCard(i)
+			newCardPair := NewCard(i)
+			cards = append(cards, newCard)
+			cards = append(cards, newCardPair)
+		}
+	case Medium:
+		for i := 0; i < mediumDifficultyCardsTotal/2; i++ {
+			newCard := NewCard(i)
+			newCardPair := NewCard(i)
+			cards = append(cards, newCard)
+			cards = append(cards, newCardPair)
+		}
+	case Hard:
+		for i := 0; i < hardDifficultyCardsTotal/2; i++ {
+			newCard := NewCard(i)
+			newCardPair := NewCard(i)
+			cards = append(cards, newCard)
+			cards = append(cards, newCardPair)
+		}
+	}
+
+	return cards
 }
 
 func checkCardsOrder(beforeShuffleCards []Card, afterShuffleCards []Card) bool {

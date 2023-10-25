@@ -15,19 +15,22 @@ const (
 	hardDifficultyPenalization   = 5
 )
 
+var initializationCard selectedCard
+
 // Function to create/inizialate a Game
 func NewGame(playerName string, gameDifficulty Difficulty) (*Game, error) {
 	// TODO: start the timer and initialize the remaining stuff
-	initializationCard := NewCard(-1)
+	defaultCard := NewCard(-1)
+	initializationCard = selectedCard{
+		Card:     defaultCard,
+		Position: -1,
+	}
 	createdGame := &Game{
-		playerName: playerName,
-		difficulty: gameDifficulty,
-		Ranking:    nil,
-		timer:      0,
-		selectedCard: selectedCard{
-			Card:     initializationCard,
-			Position: -1,
-		},
+		playerName:   playerName,
+		difficulty:   gameDifficulty,
+		Ranking:      nil,
+		timer:        0,
+		selectedCard: initializationCard,
 	}
 
 	err := createdGame.createCards(gameDifficulty)
@@ -54,10 +57,15 @@ func (g *Game) ChooseCardOnBoard(cardToSelect int) error {
 		return custom_errors.NewInvalidPositionError(cardToSelect)
 	}
 
-	newSelectedCard := g.cards[cardToSelect]
-	newSelectedCard.Click()
+	previousSelectedCard := g.selectedCard
+	card := g.cards[cardToSelect]
+	card.Click()
+	newSelectedCard := selectedCard{
+		Card:     card,
+		Position: cardToSelect,
+	}
 
-	if newSelectedCard.GetValue() != g.selectedCard.Card.GetValue() {
+	if previousSelectedCard.Position != -1 && previousSelectedCard.Card.GetValue() != -1 && newSelectedCard.Card.GetValue() != previousSelectedCard.Card.GetValue() {
 		switch g.difficulty {
 		case Easy:
 			g.timer += easyDifficultyPenalization
@@ -66,14 +74,19 @@ func (g *Game) ChooseCardOnBoard(cardToSelect int) error {
 		case Hard:
 			g.timer += hardDifficultyPenalization
 		}
+
 		g.selectedCard.Card.Click()
+		g.selectedCard = newSelectedCard
+		return nil
+	} else if newSelectedCard.Card.GetValue() == previousSelectedCard.Card.GetValue() && previousSelectedCard.Position == cardToSelect {
+		// Same card selected. No penalization
+		return nil
+	} else if newSelectedCard.Card.GetValue() == previousSelectedCard.Card.GetValue() && newSelectedCard.Position != previousSelectedCard.Position {
+		// If the both cards were correctly selected there is no penalization and the selected card is reset
+		g.selectedCard = initializationCard
 	}
 
-	g.selectedCard = selectedCard{
-		Card:     newSelectedCard,
-		Position: cardToSelect,
-	}
-
+	g.selectedCard = newSelectedCard
 	return nil
 }
 
