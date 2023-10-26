@@ -1,6 +1,7 @@
 package model
 
 import (
+	"gaspar44/TQS/model/custom_errors"
 	"testing"
 
 	assert2 "github.com/stretchr/testify/assert"
@@ -376,6 +377,157 @@ func TestGameHardModeWrongCardChose(t *testing.T) {
 	newSelectedCard = game.selectedCard
 	assert.NotEqual(newSelectedCard, previousSelectedCard)
 	assert.GreaterOrEqual(hardDifficultyPenalization, game.timer)
+}
+
+func TestGameEasyModeChoseSameCardTwice(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Easy)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.Equal(0, game.timer)
+	assert.Equal(easyDifficultyCardsTotal, len(game.GetCards()))
+
+	assert.Equal(-1, game.selectedCard.Card.value)
+	assert.False(game.selectedCard.Card.isVisible)
+	assert.False(game.selectedCard.Card.isDisable)
+	assert.Equal(-1, game.selectedCard.Position)
+
+	previousSelectedCard := game.selectedCard
+	err = game.ChooseCardOnBoard(0)
+	assert.Nil(err)
+	newSelectedCard := game.selectedCard
+	assert.NotEqual(newSelectedCard, previousSelectedCard)
+
+	sameCardChoice := game.selectedCard
+	err = game.ChooseCardOnBoard(0)
+	assert.Nil(err)
+	newSelectedCard = game.selectedCard
+	assert.Equal(sameCardChoice, newSelectedCard)
+	assert.Equal(0, game.timer)
+}
+
+func TestGameHardModeChoseSameCardTwice(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Hard)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.Equal(0, game.timer)
+	assert.Equal(hardDifficultyCardsTotal, len(game.GetCards()))
+
+	assert.Equal(-1, game.selectedCard.Card.value)
+	assert.False(game.selectedCard.Card.isVisible)
+	assert.False(game.selectedCard.Card.isDisable)
+	assert.Equal(-1, game.selectedCard.Position)
+
+	previousSelectedCard := game.selectedCard
+	err = game.ChooseCardOnBoard(0)
+	assert.Nil(err)
+	newSelectedCard := game.selectedCard
+	assert.NotEqual(newSelectedCard, previousSelectedCard)
+
+	sameCardChoice := game.selectedCard
+	err = game.ChooseCardOnBoard(0)
+	assert.Nil(err)
+	newSelectedCard = game.selectedCard
+	assert.Equal(sameCardChoice, newSelectedCard)
+	assert.Equal(0, game.timer)
+}
+
+func TestGameCorrectCards(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Easy)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.Equal(0, game.timer)
+	assert.Equal(easyDifficultyCardsTotal, len(game.GetCards()))
+
+	hackedCardList := createCards(Easy)
+	game.cards = hackedCardList // Only to obtain a card list. Only because it's go's testing, we can access and modify private attributes
+
+	assert.Equal(-1, game.selectedCard.Card.value)
+	assert.False(game.selectedCard.Card.isVisible)
+	assert.False(game.selectedCard.Card.isDisable)
+	assert.Equal(-1, game.selectedCard.Position)
+
+	previousSelectedCard := game.selectedCard
+	err = game.ChooseCardOnBoard(0)
+	assert.Nil(err)
+	newSelectedCard := game.selectedCard
+	assert.NotEqual(newSelectedCard, previousSelectedCard)
+
+	previousSelectedCard = game.selectedCard
+	err = game.ChooseCardOnBoard(1)
+	assert.Nil(err)
+	newSelectedCard = game.selectedCard
+	assert.NotEqual(newSelectedCard, previousSelectedCard)
+
+	assert.Equal(initializationCard.Card.GetValue(), newSelectedCard.Card.GetValue())
+	assert.Equal(initializationCard.Position, newSelectedCard.Position)
+	assert.True(previousSelectedCard.Card.isDisable)
+	assert.True(game.GetCards()[1].isDisable)
+	assert.Equal(0, game.timer)
+}
+
+func TestGameSelectDisabledCard(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Easy)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.Equal(0, game.timer)
+	assert.Equal(easyDifficultyCardsTotal, len(game.GetCards()))
+
+	hackedCardList := createCards(Easy)
+	game.cards = hackedCardList // Only to obtain a card list. Only because it's go's testing, we can access and modify private attributes
+
+	assert.Equal(-1, game.selectedCard.Card.value)
+	assert.False(game.selectedCard.Card.isVisible)
+	assert.False(game.selectedCard.Card.isDisable)
+	assert.Equal(-1, game.selectedCard.Position)
+
+	previousSelectedCard := game.selectedCard
+	err = game.ChooseCardOnBoard(0)
+	assert.Nil(err)
+	newSelectedCard := game.selectedCard
+	assert.NotEqual(newSelectedCard, previousSelectedCard)
+
+	previousSelectedCard = game.selectedCard
+	err = game.ChooseCardOnBoard(1)
+	assert.Nil(err)
+	newSelectedCard = game.selectedCard
+	assert.NotEqual(newSelectedCard, previousSelectedCard)
+
+	err = game.ChooseCardOnBoard(1)
+	assert.Nil(err)
+	newSelectedCard = game.selectedCard
+
+	assert.Equal(-1, newSelectedCard.Card.value)
+	assert.False(newSelectedCard.Card.isVisible)
+	assert.False(newSelectedCard.Card.isDisable)
+	assert.Equal(-1, newSelectedCard.Position)
+}
+
+func TestGameInvalidLowerCardSelection(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Easy)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.Equal(0, game.timer)
+	assert.Equal(easyDifficultyCardsTotal, len(game.GetCards()))
+
+	invalidPosition := -1
+	err = game.ChooseCardOnBoard(invalidPosition)
+	assert.NotNil(err)
+	assert.Equal(err.Error(), custom_errors.InvalidCardPositionErrorMessage+"-1")
 }
 
 func createCards(difficulty Difficulty) []Card {

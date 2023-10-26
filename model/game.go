@@ -22,7 +22,7 @@ func NewGame(playerName string, gameDifficulty Difficulty) (*Game, error) {
 	// TODO: start the timer and initialize the remaining stuff
 	defaultCard := NewCard(-1)
 	initializationCard = selectedCard{
-		Card:     defaultCard,
+		Card:     &defaultCard,
 		Position: -1,
 	}
 	createdGame := &Game{
@@ -38,7 +38,7 @@ func NewGame(playerName string, gameDifficulty Difficulty) (*Game, error) {
 }
 
 type selectedCard struct {
-	Card     Card
+	Card     *Card
 	Position int
 }
 
@@ -58,7 +58,12 @@ func (g *Game) ChooseCardOnBoard(cardToSelect int) error {
 	}
 
 	previousSelectedCard := g.selectedCard
-	card := g.cards[cardToSelect]
+	card := &g.cards[cardToSelect]
+
+	if card.isDisable {
+		return nil
+	}
+
 	card.Click()
 	newSelectedCard := selectedCard{
 		Card:     card,
@@ -83,7 +88,10 @@ func (g *Game) ChooseCardOnBoard(cardToSelect int) error {
 		return nil
 	} else if newSelectedCard.Card.GetValue() == previousSelectedCard.Card.GetValue() && newSelectedCard.Position != previousSelectedCard.Position {
 		// If the both cards were correctly selected there is no penalization and the selected card is reset
+		previousSelectedCard.Card.disable()
+		card.disable()
 		g.selectedCard = initializationCard
+		return nil
 	}
 
 	g.selectedCard = newSelectedCard

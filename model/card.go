@@ -36,6 +36,10 @@ func (c *Card) SetValue(assignedValue int) {
 	c.value = assignedValue
 }
 
+func (c *Card) disable() {
+	c.isDisable = true
+}
+
 // Functions:
 
 func (c *Card) Click() {
