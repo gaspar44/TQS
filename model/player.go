@@ -2,7 +2,7 @@ package model
 
 type Player struct {
 	Name string `json:"player_name,omitempty"`
-	Time int64  `json:"time,omitempty"`
+	Time int    `json:"time,omitempty"`
 }
 
 type Players []Player

@@ -60,7 +60,7 @@ type Game struct {
 	difficulty    Difficulty
 	Ranking       *Ranking
 	playerName    string
-	timer         int64
+	timer         int
 	selectedCard  selectedCard
 	endingChannel chan bool
 }
@@ -126,7 +126,7 @@ func (g *Game) Start() {
 	}()
 }
 
-func (g *Game) Stop() error {
+func (g *Game) Stop() {
 	g.endingChannel <- true
 	gameMutex.Lock()
 	defer gameMutex.Unlock()
@@ -136,7 +136,7 @@ func (g *Game) Stop() error {
 		Time: g.timer,
 	}
 
-	return g.Ranking.Update(player)
+	g.Ranking.Update(player)
 }
 
 func (g *Game) updateTimer() {
