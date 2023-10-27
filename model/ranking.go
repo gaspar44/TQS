@@ -2,6 +2,7 @@ package model
 
 import (
 	"gaspar44/TQS/model/custom_errors"
+	"sort"
 	"sync"
 )
 
@@ -12,14 +13,14 @@ var (
 )
 
 type Ranking struct {
-	Players       *[]Player
+	Players       []Player
 	isInitialized bool
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
 
 // ////////////////////////////////////////////////////////////////////////////////////
-func (r *Ranking) GetPlayers() (*[]Player, error) {
+func (r *Ranking) GetPlayers() ([]Player, error) {
 	if r.Players == nil {
 		return nil, custom_errors.NewRankingInitializationErrorWithMessage()
 	}
@@ -27,7 +28,7 @@ func (r *Ranking) GetPlayers() (*[]Player, error) {
 	return r.Players, nil
 }
 
-func (r *Ranking) SetPlayers(players *[]Player) {
+func (r *Ranking) SetPlayers(players []Player) {
 	if !instance.isInitialized {
 		lock.Lock()
 		defer lock.Unlock()
@@ -48,6 +49,22 @@ func (r *Ranking) release() {
 			instance = nil
 		}
 	}
+}
+
+func (r *Ranking) Update(player Player) {
+	if len(r.Players) < 10 {
+		r.Players = append(r.Players, player)
+		sort.Sort(Players(r.Players))
+		return
+	}
+
+	if r.Players[0].Time > player.Time {
+		return // Player doesn't deserve to be in the top 10 ranking
+	}
+
+	r.Players = append(r.Players, player)
+	sort.Sort(Players(r.Players))
+	r.Players = r.Players[1:] // Remove the lowest rankings
 }
 
 func GetRankingInstance() (*Ranking, error) {

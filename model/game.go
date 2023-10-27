@@ -3,6 +3,7 @@ package model
 import (
 	"gaspar44/TQS/model/custom_errors"
 	"math/rand"
+	"sync"
 	"time"
 )
 
@@ -15,25 +16,36 @@ const (
 	hardDifficultyPenalization   = 5
 )
 
-var initializationCard selectedCard
+var (
+	initializationCard selectedCard
+	gameMutex          = &sync.Mutex{}
+)
 
 // Function to create/inizialate a Game
 func NewGame(playerName string, gameDifficulty Difficulty) (*Game, error) {
 	// TODO: start the timer and initialize the remaining stuff
+	ranking, err := GetRankingInstance()
+
+	if err != nil {
+		return nil, err
+	}
 	defaultCard := NewCard(-1)
 	initializationCard = selectedCard{
 		Card:     &defaultCard,
 		Position: -1,
 	}
+
+	timerChannel := make(chan bool)
 	createdGame := &Game{
-		playerName:   playerName,
-		difficulty:   gameDifficulty,
-		Ranking:      nil,
-		timer:        0,
-		selectedCard: initializationCard,
+		playerName:    playerName,
+		difficulty:    gameDifficulty,
+		Ranking:       ranking,
+		timer:         0,
+		selectedCard:  initializationCard,
+		endingChannel: timerChannel,
 	}
 
-	err := createdGame.createCards(gameDifficulty)
+	err = createdGame.createCards(gameDifficulty)
 	return createdGame, err
 }
 
@@ -43,13 +55,14 @@ type selectedCard struct {
 }
 
 type Game struct {
-	cards        []Card
-	initialized  bool
-	difficulty   Difficulty
-	Ranking      *Ranking
-	playerName   string
-	timer        int
-	selectedCard selectedCard
+	cards         []Card
+	initialized   bool
+	difficulty    Difficulty
+	Ranking       *Ranking
+	playerName    string
+	timer         int64
+	selectedCard  selectedCard
+	endingChannel chan bool
 }
 
 func (g *Game) ChooseCardOnBoard(cardToSelect int) error {
@@ -96,6 +109,34 @@ func (g *Game) ChooseCardOnBoard(cardToSelect int) error {
 
 	g.selectedCard = newSelectedCard
 	return nil
+}
+
+func (g *Game) Start() {
+	isDone := false
+	go func() {
+		for !isDone {
+			select {
+			case isDone = <-g.endingChannel:
+			case <-time.After(time.Second):
+				gameMutex.Lock()
+				g.timer += 1
+				gameMutex.Unlock()
+			}
+		}
+	}()
+}
+
+func (g *Game) Stop() error {
+	g.endingChannel <- true
+	gameMutex.Lock()
+	defer gameMutex.Unlock()
+
+	player := Player{
+		Name: g.playerName,
+		Time: g.timer,
+	}
+
+	return g.Ranking.Update(player)
 }
 
 func (g *Game) updateTimer() {

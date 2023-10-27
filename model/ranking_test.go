@@ -41,13 +41,13 @@ func TestInitializeRanking(t *testing.T) {
 		},
 	}
 
-	ranking.SetPlayers(&players)
+	ranking.SetPlayers(players)
 	assert.True(ranking.isInitialized)
 
 	playersInRanking, err := ranking.GetPlayers()
 
 	assert.Nil(err)
-	assert.Equal(playersInRanking, &players)
+	assert.Equal(playersInRanking, players)
 }
 
 func TestRankingInitializationError(t *testing.T) {
@@ -94,14 +94,14 @@ func TestInitializeRankingMultiplesPlayers(t *testing.T) {
 		},
 	}
 
-	ranking.SetPlayers(&players)
+	ranking.SetPlayers(players)
 	assert.True(ranking.isInitialized)
-	ranking.SetPlayers(&differentPlayersInitialization)
+	ranking.SetPlayers(differentPlayersInitialization)
 	playersInRanking, err := ranking.GetPlayers()
 
 	assert.Nil(err)
-	assert.Equal(playersInRanking, &players)
-	assert.NotEqual(playersInRanking, &differentPlayersInitialization)
+	assert.Equal(playersInRanking, players)
+	assert.NotEqual(playersInRanking, differentPlayersInitialization)
 }
 
 func TestGetRankingInstanceMultithreading(t *testing.T) {
