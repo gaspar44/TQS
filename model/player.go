@@ -1,8 +1,8 @@
 package model
 
 type Player struct {
-	Name string `json:"player_name,omitempty"`
-	Time int    `json:"time,omitempty"`
+	Name   string `json:"player_name,omitempty"`
+	Points int    `json:"points,omitempty"`
 }
 
 type Players []Player
@@ -14,7 +14,7 @@ func (p Players) Len() int {
 }
 
 func (p Players) Less(i int, j int) bool {
-	return p[i].Time < p[j].Time
+	return p[i].Points < p[j].Points
 }
 
 func (p Players) Swap(i int, j int) {

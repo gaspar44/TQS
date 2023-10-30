@@ -39,7 +39,7 @@ func (c *Card) disable() {
 
 // Functions:
 func (c *Card) Click() {
-	if c.isVisible == false && c.isDisable == true {
+	if !c.isVisible && !c.isDisable {
 		c.isVisible = !c.isVisible
 	}
 }

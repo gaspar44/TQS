@@ -58,7 +58,7 @@ func (r *Ranking) Update(player Player) {
 		return
 	}
 
-	if r.Players[0].Time > player.Time {
+	if r.Players[0].Points > player.Points {
 		return // Player doesn't deserve to be in the top 10 ranking
 	}
 

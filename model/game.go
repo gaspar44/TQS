@@ -3,7 +3,6 @@ package model
 import (
 	"gaspar44/TQS/model/custom_errors"
 	"math/rand"
-	"sync"
 	"time"
 )
 
@@ -18,12 +17,11 @@ const (
 
 var (
 	initializationCard selectedCard
-	gameMutex          = &sync.Mutex{}
 )
 
 // Function to create/inizialate a Game
 func NewGame(playerName string, gameDifficulty Difficulty) (*Game, error) {
-	// TODO: start the timer and initialize the remaining stuff
+	// TODO: start the points and initialize the remaining stuff
 	ranking, err := GetRankingInstance()
 
 	if err != nil {
@@ -40,7 +38,7 @@ func NewGame(playerName string, gameDifficulty Difficulty) (*Game, error) {
 		playerName:    playerName,
 		difficulty:    gameDifficulty,
 		Ranking:       ranking,
-		timer:         0,
+		points:        0,
 		selectedCard:  initializationCard,
 		endingChannel: timerChannel,
 	}
@@ -60,21 +58,21 @@ type Game struct {
 	difficulty    Difficulty
 	Ranking       *Ranking
 	playerName    string
-	timer         int
+	points        int
 	selectedCard  selectedCard
 	endingChannel chan bool
 }
 
-func (g *Game) ChooseCardOnBoard(cardToSelect int) error {
+func (g *Game) ChooseCardOnBoard(cardToSelect int) (bool, error) {
 	if cardToSelect < 0 || cardToSelect > len(g.cards)-1 {
-		return custom_errors.NewInvalidPositionError(cardToSelect)
+		return false, custom_errors.NewInvalidPositionError(cardToSelect)
 	}
 
 	previousSelectedCard := g.selectedCard
 	card := &g.cards[cardToSelect]
 
 	if card.isDisable {
-		return nil
+		return false, nil
 	}
 
 	card.Click()
@@ -86,61 +84,38 @@ func (g *Game) ChooseCardOnBoard(cardToSelect int) error {
 	if previousSelectedCard.Position != -1 && previousSelectedCard.Card.GetValue() != -1 && newSelectedCard.Card.GetValue() != previousSelectedCard.Card.GetValue() {
 		switch g.difficulty {
 		case Easy:
-			g.timer += easyDifficultyPenalization
+			g.points += easyDifficultyPenalization
 		case Medium:
-			g.timer += mediumDifficultyPenalization
+			g.points += mediumDifficultyPenalization
 		case Hard:
-			g.timer += hardDifficultyPenalization
+			g.points += hardDifficultyPenalization
 		}
 
 		g.selectedCard.Card.Click()
 		g.selectedCard = newSelectedCard
-		return nil
+		return false, nil
 	} else if newSelectedCard.Card.GetValue() == previousSelectedCard.Card.GetValue() && previousSelectedCard.Position == cardToSelect {
 		// Same card selected. No penalization
-		return nil
+		return true, nil
 	} else if newSelectedCard.Card.GetValue() == previousSelectedCard.Card.GetValue() && newSelectedCard.Position != previousSelectedCard.Position {
 		// If the both cards were correctly selected there is no penalization and the selected card is reset
 		previousSelectedCard.Card.disable()
 		card.disable()
 		g.selectedCard = initializationCard
-		return nil
+		return true, nil
 	}
 
 	g.selectedCard = newSelectedCard
-	return nil
-}
-
-func (g *Game) Start() {
-	isDone := false
-	go func() {
-		for !isDone {
-			select {
-			case isDone = <-g.endingChannel:
-			case <-time.After(time.Second):
-				gameMutex.Lock()
-				g.timer += 1
-				gameMutex.Unlock()
-			}
-		}
-	}()
+	return true, nil
 }
 
 func (g *Game) Stop() {
-	g.endingChannel <- true
-	gameMutex.Lock()
-	defer gameMutex.Unlock()
-
 	player := Player{
-		Name: g.playerName,
-		Time: g.timer,
+		Name:   g.playerName,
+		Points: g.points,
 	}
 
 	g.Ranking.Update(player)
-}
-
-func (g *Game) updateTimer() {
-	//
 }
 
 func (g *Game) GetCards() []Card {

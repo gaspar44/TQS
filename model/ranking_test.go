@@ -32,12 +32,12 @@ func TestInitializeRanking(t *testing.T) {
 
 	players := []Player{
 		{
-			Name: "test1",
-			Time: 0,
+			Name:   "test1",
+			Points: 0,
 		},
 		{
-			Name: "test2",
-			Time: 10,
+			Name:   "test2",
+			Points: 10,
 		},
 	}
 
@@ -78,19 +78,19 @@ func TestInitializeRankingMultiplesPlayers(t *testing.T) {
 
 	players := []Player{
 		{
-			Name: "test1",
-			Time: 0,
+			Name:   "test1",
+			Points: 0,
 		},
 		{
-			Name: "test2",
-			Time: 10,
+			Name:   "test2",
+			Points: 10,
 		},
 	}
 
 	differentPlayersInitialization := []Player{
 		{
-			Name: "test3",
-			Time: 10,
+			Name:   "test3",
+			Points: 10,
 		},
 	}
 
