@@ -104,7 +104,7 @@ func (g *Game) ChooseCardOnBoard(cardToSelect int) (bool, error) {
 		g.selectedCard = initializationCard
 		return true, nil
 	}
-
+	g.points += 1
 	g.selectedCard = newSelectedCard
 	return true, nil
 }

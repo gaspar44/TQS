@@ -256,7 +256,7 @@ func TestGameEasyModeWrongCardChose(t *testing.T) {
 	assert.Nil(err)
 	newSelectedCard = game.selectedCard
 	assert.NotEqual(newSelectedCard, previousSelectedCard)
-	assert.GreaterOrEqual(easyDifficultyPenalization, game.points)
+	assert.Equal(easyDifficultyPenalization+1, game.points)
 }
 
 func TestGameMediumModeWrongCardChose(t *testing.T) {
@@ -290,7 +290,7 @@ func TestGameMediumModeWrongCardChose(t *testing.T) {
 	assert.Nil(err)
 	newSelectedCard = game.selectedCard
 	assert.NotEqual(newSelectedCard, previousSelectedCard)
-	assert.GreaterOrEqual(mediumDifficultyPenalization, game.points)
+	assert.Equal(mediumDifficultyPenalization+1, game.points)
 }
 
 func TestGameHardModeWrongCardChose(t *testing.T) {
@@ -324,7 +324,7 @@ func TestGameHardModeWrongCardChose(t *testing.T) {
 	assert.Nil(err)
 	newSelectedCard = game.selectedCard
 	assert.NotEqual(newSelectedCard, previousSelectedCard)
-	assert.GreaterOrEqual(hardDifficultyPenalization, game.points)
+	assert.Equal(hardDifficultyPenalization+1, game.points)
 }
 
 func TestGameHardModeChoseSameCardTwice(t *testing.T) {
@@ -355,7 +355,7 @@ func TestGameHardModeChoseSameCardTwice(t *testing.T) {
 	assert.Nil(err)
 	newSelectedCard = game.selectedCard
 	assert.Equal(sameCardChoice, newSelectedCard)
-	assert.Equal(0, game.points)
+	assert.Equal(1, game.points)
 }
 
 func TestGameCorrectCards(t *testing.T) {
@@ -394,7 +394,7 @@ func TestGameCorrectCards(t *testing.T) {
 	assert.Equal(initializationCard.Position, newSelectedCard.Position)
 	assert.True(previousSelectedCard.Card.isDisable)
 	assert.True(game.GetCards()[1].isDisable)
-	assert.Equal(0, game.points)
+	assert.Equal(1, game.points)
 }
 
 func TestGameSelectDisabledCard(t *testing.T) {
