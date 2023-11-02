@@ -54,6 +54,11 @@ func (r *Ranking) release() {
 
 func (r *Ranking) Update(player Player) {
 	if len(r.Players) < maxPlayers {
+		for _, playerInRanking := range r.Players {
+			if playerInRanking.Name == player.Name && playerInRanking.Points == player.Points {
+				return // Player already in ranking
+			}
+		}
 		r.Players = append(r.Players, player)
 		sort.Sort(Players(r.Players))
 		return

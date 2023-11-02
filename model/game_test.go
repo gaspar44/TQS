@@ -440,6 +440,37 @@ func TestGameSelectDisabledCard(t *testing.T) {
 	assert.Equal(-1, newSelectedCard.Position)
 }
 
+func TestGameStop(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Easy)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.Equal(0, game.points)
+
+	ranking, err := GetRankingInstance()
+	assert.Nil(err)
+	assert.NotNil(ranking)
+	players := []Player{
+		{
+			Name:   "test1",
+			Points: 0,
+		},
+		{
+			Name:   "test2",
+			Points: 10,
+		},
+	}
+
+	ranking.SetPlayers(players)
+	game.Stop()
+
+	setPlayers, err := ranking.GetPlayers()
+	assert.Nil(err)
+	assert.Equal(players, setPlayers)
+}
+
 func TestGameInvalidLowerCardSelection(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"

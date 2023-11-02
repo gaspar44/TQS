@@ -51,6 +51,37 @@ func TestInitializeRanking(t *testing.T) {
 	assert.Equal(playersInRanking, players)
 }
 
+func TestRankingInsertSamePlayerTwice(t *testing.T) {
+	assert := assert2.New(t)
+
+	ranking, err := GetRankingInstance()
+	defer ranking.release()
+	assert.Nil(err)
+	assert.NotNil(ranking)
+	assert.False(ranking.isInitialized)
+
+	players := []Player{
+		{
+			Name:   "test1",
+			Points: 0,
+		},
+		{
+			Name:   "test2",
+			Points: 10,
+		},
+	}
+
+	ranking.SetPlayers(players)
+	assert.True(ranking.isInitialized)
+
+	ranking.Update(Player{
+		Name:   "test1",
+		Points: 0,
+	})
+
+	assert.Equal(len(players), len(ranking.Players))
+}
+
 func TestRankingInitializationError(t *testing.T) {
 	assert := assert2.New(t)
 
