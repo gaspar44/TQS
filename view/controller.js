@@ -27,15 +27,59 @@ document.getElementById('start_game').addEventListener('click', function () {
     .catch(error => {
         console.error('Error on starting game: ', error);
     });
+
     window.location.href = `game.html`;
-    const playerNameCell = document.querySelector('table th');
+    const playerNameCell = "";
+    switch (gameDifficulty) {
+        case 'easy':
+            playerNameCell = document.querySelector('tr#first_row_easy th');
+            document.getElementById('game_board_medium').style.display = 'none';
+            document.getElementById('game_board_hard').style.display = 'none';
+            break;
+        case 'medium':
+            playerNameCell = document.querySelector('tr#first_row_medium th');
+            document.getElementById('game_board_easy').style.display = 'none';
+            document.getElementById('game_board_hard').style.display = 'none';
+        case 'hard':
+            playerNameCell = document.querySelector('tr#first_row_hard th');
+            document.getElementById('game_board_easy').style.display = 'none';
+            document.getElementById('game_board_medium').style.display = 'none';
+            break;
+        default:
+            break;
+    }
     playerNameCell.textContent = playerName;
+    // Get function to get cards
+    fetch('/getCards', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    }).then(response => response.json())
+        .then(data => {
+            // Assign cards, how?
+        })
+        .catch(error => {
+            console.error('Error obtaining ranking:', error);
+        }); 
 });
 
 // Ranking
 document.getElementById('ranking').addEventListener('click', function () {
-    // Lógica para mostrar el ranking
-    alert('Showing ranking...');
+    fetch('/getRanking', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+        .then(data => {
+            const gameRankingDiv = document.getElementById('game_ranking');
+            gameRankingDiv.innerHTML = JSON.stringify(data, null, 2);
+        })
+        .catch(error => {
+            console.error('Error obtaining ranking:', error);
+        });    
 });
 
 // Exit

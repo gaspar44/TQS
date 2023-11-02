@@ -34,6 +34,8 @@ func NewServer() *http.Server {
 	fileServer := http.FileServer(fileSystem)
 	mux["/"] = fileServer.ServeHTTP
 	mux[CreateGame] = createGame
+	mux[GetRanking] = displayRanking
+	mux[GetCards] = displayCards
 	mux[ChooseCard] = chooseCard
 
 	infoLogger.Println("Server created and running at port: " + server.Addr)
