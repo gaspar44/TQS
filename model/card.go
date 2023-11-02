@@ -15,22 +15,8 @@ func NewCard(assignedValue int) Card {
 	}
 }
 
-// Getters
-func (c *Card) GetVisibility() bool {
-	return c.isVisible
-}
-
 func (c *Card) GetValue() int {
 	return c.value
-}
-
-// Setters
-func (c *Card) SetVisibility(assignedVisibility bool) {
-	c.isVisible = assignedVisibility
-}
-
-func (c *Card) SetValue(assignedValue int) {
-	c.value = assignedValue
 }
 
 func (c *Card) disable() {
