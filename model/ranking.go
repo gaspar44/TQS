@@ -6,7 +6,10 @@ import (
 	"sync"
 )
 
-// ////////////////////////////////////////////////////////////////////////////////////
+const (
+	maxPlayers = 10
+)
+
 var (
 	lock     = &sync.Mutex{}
 	instance *Ranking
@@ -17,9 +20,6 @@ type Ranking struct {
 	isInitialized bool
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
-
-// ////////////////////////////////////////////////////////////////////////////////////
 func (r *Ranking) GetPlayers() ([]Player, error) {
 	if r.Players == nil {
 		return nil, custom_errors.NewRankingInitializationErrorWithMessage()
@@ -35,6 +35,7 @@ func (r *Ranking) SetPlayers(players []Player) {
 
 		if !instance.isInitialized {
 			instance.Players = players
+			sort.Sort(Players(r.Players))
 			instance.isInitialized = true
 		}
 	}
@@ -52,19 +53,24 @@ func (r *Ranking) release() {
 }
 
 func (r *Ranking) Update(player Player) {
-	if len(r.Players) < 10 {
+	if len(r.Players) < maxPlayers {
+		for _, playerInRanking := range r.Players {
+			if playerInRanking.Name == player.Name && playerInRanking.Points == player.Points {
+				return // Player already in ranking
+			}
+		}
 		r.Players = append(r.Players, player)
 		sort.Sort(Players(r.Players))
 		return
 	}
 
-	if r.Players[0].Time > player.Time {
+	if r.Players[0].Points < player.Points {
 		return // Player doesn't deserve to be in the top 10 ranking
 	}
 
 	r.Players = append(r.Players, player)
 	sort.Sort(Players(r.Players))
-	r.Players = r.Players[1:] // Remove the lowest rankings
+	r.Players = r.Players[:len(r.Players)-1] // Remove the lowest rankings
 }
 
 func GetRankingInstance() (*Ranking, error) {

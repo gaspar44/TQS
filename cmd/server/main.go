@@ -1,8 +1,14 @@
 package main
 
-import "fmt"
+import (
+	"gaspar44/TQS/controller"
+	"log"
+)
 
 func main() {
-	// Main funcion to lunch game and server
-	fmt.Print("Hello world")
+	httpFileServer := controller.NewServer()
+
+	if err := httpFileServer.ListenAndServe(); err != nil {
+		log.Fatal(err)
+	}
 }

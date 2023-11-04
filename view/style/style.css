@@ -1,0 +1,14 @@
+/* General styles*/
+button {
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+/* Menu styles*/
+#main_menu {
+    border: black solid 2px;
+}
+#name_difficulty {
+    border: black solid 2px;
+    display: none;
+}

@@ -1,7 +1,6 @@
 package model
 
 type Card struct {
-	// Info about the card (visibility and value)
 	isVisible bool
 	isDisable bool
 	value     int
@@ -16,24 +15,8 @@ func NewCard(assignedValue int) Card {
 	}
 }
 
-// Getters
-func (c *Card) GetVisibility() bool {
-	// To get card visibility
-	return c.isVisible
-}
-
 func (c *Card) GetValue() int {
-	// Common getter
 	return c.value
-}
-
-// Setters
-func (c *Card) SetVisibility(assignedVisibility bool) {
-	c.isVisible = assignedVisibility
-}
-
-func (c *Card) SetValue(assignedValue int) {
-	c.value = assignedValue
 }
 
 func (c *Card) disable() {
@@ -41,11 +24,8 @@ func (c *Card) disable() {
 }
 
 // Functions:
-
 func (c *Card) Click() {
-	// Missing:
-	// Check if card is already matched with another
-	if c.isVisible != true {
+	if !c.isVisible && !c.isDisable {
 		c.isVisible = !c.isVisible
 	}
 }
