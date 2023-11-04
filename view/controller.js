@@ -20,6 +20,10 @@ document.getElementById('start_game').addEventListener('click', function () {
     .then(response => {
         if (response.status === 200) {
             console.log('Starting game...');
+            response.json().then(data => {
+                const cards = data.cards;
+                console.log('Cards:', cards);
+            });
         } else {
             console.error('Error on starting game: ', response.statusText);
         }
@@ -30,38 +34,51 @@ document.getElementById('start_game').addEventListener('click', function () {
 
     window.location.href = `game.html`;
     const playerNameCell = "";
+    const buttons = [];
     switch (gameDifficulty) {
         case 'easy':
             playerNameCell = document.querySelector('tr#first_row_easy th');
             document.getElementById('game_board_medium').style.display = 'none';
             document.getElementById('game_board_hard').style.display = 'none';
+            for (let i = 0; i < 6; i++) {
+                const buttonId = `card_easy_${i}`;
+                const button = document.getElementById(buttonId);
+                buttons.push(button);
+            }
+            buttons.forEach((button, index) => {
+                button.setAttribute('data-card-value', cards[index]);
+            });
             break;
         case 'medium':
             playerNameCell = document.querySelector('tr#first_row_medium th');
             document.getElementById('game_board_easy').style.display = 'none';
             document.getElementById('game_board_hard').style.display = 'none';
+            for (let i = 0; i < 6; i++) {
+                const buttonId = `card_medium_${i}`;
+                const button = document.getElementById(buttonId);
+                buttons.push(button);
+            }
+            buttons.forEach((button, index) => {
+                button.setAttribute('data-card-value', cards[index]);
+            });
         case 'hard':
             playerNameCell = document.querySelector('tr#first_row_hard th');
             document.getElementById('game_board_easy').style.display = 'none';
             document.getElementById('game_board_medium').style.display = 'none';
+            for (let i = 0; i < 6; i++) {
+                const buttonId = `card_hard__${i}`;
+                const button = document.getElementById(buttonId);
+                buttons.push(button);
+            }
+            buttons.forEach((button, index) => {
+                button.setAttribute('data-card-value', cards[index]);
+            });
             break;
         default:
             break;
     }
     playerNameCell.textContent = playerName;
-    // Get function to get cards
-    fetch('/getCards', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    }).then(response => response.json())
-        .then(data => {
-            // Assign cards, how?
-        })
-        .catch(error => {
-            console.error('Error obtaining ranking:', error);
-        }); 
+
 });
 
 // Ranking

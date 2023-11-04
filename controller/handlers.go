@@ -62,21 +62,35 @@ func createGame(writer http.ResponseWriter, request *http.Request) {
 	activeGames[playerName] = game
 	writer.WriteHeader(http.StatusCreated)
 	infoLogger.Println("Game created")
-}
 
-func displayCards(writer http.ResponseWriter, request *http.Request) {
-	dumpHttpRequest, _ := httputil.DumpRequest(request, true)
-	debugLogger.Println(string(dumpHttpRequest))
+	// Setting cards
+	cards := game.GetCards()
 
-	if request.Method != http.MethodGet {
-		infoLogger.Println("Invalid http method:" + request.Method)
-		writer.WriteHeader(http.StatusMethodNotAllowed)
-		writer.Header().Set("Access-Control-Allow-Methods", http.MethodPost)
+	// Convertir las cartas de model.Card a []string
+	cardsJSON := make([]int, len(cards))
+	for i, card := range cards {
+		cardsJSON[i] = card.GetValue()
+	}
+
+	response := struct {
+		Cards []int `json:"cards"`
+	}{Cards: cardsJSON}
+
+	writer.Header().Set("Content-Type", "application/json")
+
+	responseJSON, err := json.Marshal(response)
+	if err != nil {
+		debugLogger.Println(err.Error())
+		http.Error(writer, "Error on JSON marshaling", http.StatusInternalServerError)
 		return
 	}
 
-	// Como obtengo las cartas?
-	cards := GetCards()
+	_, err = writer.Write(responseJSON)
+	if err != nil {
+		debugLogger.Println(err.Error())
+		http.Error(writer, "Error writing response", http.StatusInternalServerError)
+		return
+	}
 
 }
 
