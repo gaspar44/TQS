@@ -8,6 +8,7 @@ import (
 	"testing"
 )
 
+// Unit Test: Checking "GetRankingInstance()" function
 func TestGetRankingInstance(t *testing.T) {
 	assert := assert2.New(t)
 	ranking, err := GetRankingInstance()
@@ -22,6 +23,8 @@ func TestGetRankingInstance(t *testing.T) {
 	assert.Equal(ranking, ranking2)
 }
 
+// Unit Test: Checking players added on ranking
+// Partition Share: If 1 player is added correctly, any could be
 func TestInitializeRanking(t *testing.T) {
 	assert := assert2.New(t)
 
@@ -51,6 +54,8 @@ func TestInitializeRanking(t *testing.T) {
 	assert.Equal(playersInRanking, players)
 }
 
+// Unit Test: Checking updating player
+// Partition Share: If i can update a player, i can update any
 func TestRankingInsertSamePlayerTwice(t *testing.T) {
 	assert := assert2.New(t)
 
@@ -82,6 +87,7 @@ func TestRankingInsertSamePlayerTwice(t *testing.T) {
 	assert.Equal(len(players), len(ranking.Players))
 }
 
+// Unit Test: Checking error on initialization
 func TestRankingInitializationError(t *testing.T) {
 	assert := assert2.New(t)
 
@@ -99,6 +105,8 @@ func TestRankingInitializationError(t *testing.T) {
 	}
 }
 
+// Unit Test: Checking adding players on top 10
+// Partition Share: If i can update a player, i can update any
 func TestInitializeRankingMultiplesPlayers(t *testing.T) {
 	assert := assert2.New(t)
 
@@ -136,6 +144,8 @@ func TestInitializeRankingMultiplesPlayers(t *testing.T) {
 	assert.NotEqual(playersInRanking, differentPlayersInitialization)
 }
 
+// Unit Test:
+// Partition Share:
 func TestGetRankingInstanceMultithreading(t *testing.T) {
 	assert := assert2.New(t)
 	var rankings [2]*Ranking
@@ -157,6 +167,8 @@ func TestGetRankingInstanceMultithreading(t *testing.T) {
 	assert.Equal(rankings[0], rankings[1])
 }
 
+// Unit Test: Checking adding players on top 10
+// Partition Share: If i can add a player, i can add any
 func TestAddPlayersToRankingAtMax(t *testing.T) {
 	assert := assert2.New(t)
 	players := make(Players, maxPlayers)
@@ -186,6 +198,7 @@ func TestAddPlayersToRankingAtMax(t *testing.T) {
 	assert.Equal(newPlayerRecord, newRanking[0])
 }
 
+// Unit Test
 func TestAddPlayersEmptyRanking(t *testing.T) {
 	assert := assert2.New(t)
 
@@ -209,6 +222,8 @@ func TestAddPlayersEmptyRanking(t *testing.T) {
 	}
 }
 
+// Unit Test
+// Partition Share
 func TestAddPlayersToRankingWithoutDeserve(t *testing.T) {
 	assert := assert2.New(t)
 	players := make(Players, maxPlayers)

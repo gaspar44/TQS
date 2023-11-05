@@ -63,10 +63,8 @@ func createGame(writer http.ResponseWriter, request *http.Request) {
 	writer.WriteHeader(http.StatusCreated)
 	infoLogger.Println("Game created")
 
-	// Setting cards
 	cards := game.GetCards()
 
-	// Convertir las cartas de model.Card a []string
 	cardsJSON := make([]int, len(cards))
 	for i, card := range cards {
 		cardsJSON[i] = card.GetValue()
@@ -91,7 +89,6 @@ func createGame(writer http.ResponseWriter, request *http.Request) {
 		http.Error(writer, "Error writing response", http.StatusInternalServerError)
 		return
 	}
-
 }
 
 func chooseCard(writer http.ResponseWriter, request *http.Request) {
