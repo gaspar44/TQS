@@ -8,6 +8,7 @@ import (
 )
 
 // Unit test: Checking "NewGame()" function (easy)
+// Test de cobertura (easy)
 func TestNewGameEasyMode(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -34,6 +35,7 @@ func TestNewGameEasyMode(t *testing.T) {
 }
 
 // Unit test: Checking "NewGame()" function (Medium)
+// Test de cobertura (easy)
 func TestNewGameMediumMode(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -60,6 +62,7 @@ func TestNewGameMediumMode(t *testing.T) {
 }
 
 // Unit test: Checking "NewGame()" function (Hard)
+// Test de cobertura (easy)
 func TestNewGameHardMode(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -87,6 +90,7 @@ func TestNewGameHardMode(t *testing.T) {
 }
 
 // Unit test: Checking "shuffleCards()" functions (Easy)
+// Loop Test ->
 func TestGameEasyModeShuffle(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test2"
@@ -112,6 +116,7 @@ func TestGameEasyModeShuffle(t *testing.T) {
 }
 
 // Unit test: Checking "shuffleCards()" functions (Medium)
+// Loop Test ->
 func TestGameMediumModeShuffle(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test2"
@@ -137,6 +142,7 @@ func TestGameMediumModeShuffle(t *testing.T) {
 }
 
 // Unit test: Checking "shuffleCards()" functions (Hard)
+// Loop Test ->
 func TestGameHardModeShuffle(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test2"
@@ -498,7 +504,7 @@ func TestGameStop(t *testing.T) {
 }
 
 // Unit Test: Checking card position
-// Partition Share: If 1 card is on onvalid position, another could be
+// Limit values
 func TestGameInvalidLowerCardSelection(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"

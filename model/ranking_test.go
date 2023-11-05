@@ -2,10 +2,11 @@ package model
 
 import (
 	"gaspar44/TQS/model/custom_errors"
-	assert2 "github.com/stretchr/testify/assert"
 	"strconv"
 	"sync"
 	"testing"
+
+	assert2 "github.com/stretchr/testify/assert"
 )
 
 // Unit Test: Checking "GetRankingInstance()" function
@@ -88,6 +89,7 @@ func TestRankingInsertSamePlayerTwice(t *testing.T) {
 }
 
 // Unit Test: Checking error on initialization
+// Limit values
 func TestRankingInitializationError(t *testing.T) {
 	assert := assert2.New(t)
 

@@ -6,7 +6,7 @@ import (
 	assert2 "github.com/stretchr/testify/assert"
 )
 
-// Test Unitario
+// Unit Test
 func TestCard(t *testing.T) {
 	assert := assert2.New(t)
 	card := NewCard(1)
