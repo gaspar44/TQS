@@ -7,12 +7,18 @@ type createGameRequest struct {
 	GameDifficulty model.Difficulty `json:"difficulty"`
 }
 
+type createGameResponse struct {
+	PlayerName string       `json:"player_name"`
+	Cards      []model.Card `json:"cards"`
+}
+
 type choiceCardRequest struct {
 	PlayerName string `json:"player_name"`
 	CardChoice int    `json:"card_choice"`
 }
 
 type choiceCardResponse struct {
-	PlayerName string `json:"player_name"`
-	Success    bool   `json:"success"`
+	PlayerName string       `json:"player_name"`
+	Success    bool         `json:"success"`
+	Cards      []model.Card `json:"cards"`
 }

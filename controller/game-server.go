@@ -2,6 +2,7 @@ package controller
 
 import (
 	"gaspar44/TQS/model"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -17,12 +18,14 @@ var (
 	debugLogger *log.Logger
 )
 
-func init() {
-	infoLogger = log.New(os.Stdout, "INFO: ", log.LstdFlags|log.Llongfile)
-	debugLogger = log.New(os.Stdout, "DEBUG: ", log.LstdFlags|log.Llongfile)
+func NewServer() *http.Server {
+	return NewServerWithLogger(os.Stdout)
 }
 
-func NewServer() *http.Server {
+func NewServerWithLogger(out io.Writer) *http.Server {
+	infoLogger = log.New(out, "INFO: ", log.LstdFlags|log.Llongfile)
+	debugLogger = log.New(out, "DEBUG: ", log.LstdFlags|log.Llongfile)
+
 	server := http.Server{
 		Addr:    Port,
 		Handler: &defaultHandler{},
@@ -39,4 +42,5 @@ func NewServer() *http.Server {
 
 	infoLogger.Println("Server created and running at port: " + server.Addr)
 	return &server
+
 }

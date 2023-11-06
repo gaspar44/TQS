@@ -16,7 +16,7 @@ var (
 )
 
 type Ranking struct {
-	Players       []Player
+	Players       []Player `json:"players"`
 	isInitialized bool
 }
 

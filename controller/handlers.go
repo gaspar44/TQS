@@ -64,31 +64,20 @@ func createGame(writer http.ResponseWriter, request *http.Request) {
 	infoLogger.Println("Game created")
 
 	cards := game.GetCards()
-
-	cardsJSON := make([]int, len(cards))
-	for i, card := range cards {
-		cardsJSON[i] = card.GetValue()
+	response := createGameResponse{
+		PlayerName: playerName,
+		Cards:      cards,
 	}
 
-	response := struct {
-		Cards []int `json:"cards"`
-	}{Cards: cardsJSON}
-
-	writer.Header().Set("Content-Type", "application/json")
-
-	responseJSON, err := json.Marshal(response)
+	encoder := json.NewEncoder(writer)
+	err = encoder.Encode(response)
 	if err != nil {
 		debugLogger.Println(err.Error())
 		http.Error(writer, "Error on JSON marshaling", http.StatusInternalServerError)
 		return
 	}
 
-	_, err = writer.Write(responseJSON)
-	if err != nil {
-		debugLogger.Println(err.Error())
-		http.Error(writer, "Error writing response", http.StatusInternalServerError)
-		return
-	}
+	writer.Header().Set("Content-Type", "application/json")
 }
 
 func chooseCard(writer http.ResponseWriter, request *http.Request) {
@@ -129,6 +118,7 @@ func chooseCard(writer http.ResponseWriter, request *http.Request) {
 	choiceResponse := choiceCardResponse{
 		PlayerName: choiceRequest.PlayerName,
 		Success:    correct,
+		Cards:      game.GetCards(),
 	}
 
 	encoder := json.NewEncoder(writer)
@@ -160,14 +150,14 @@ func displayRanking(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
+	encoder := json.NewEncoder(writer)
+	err = encoder.Encode(ranking)
 
-	rankingJSON, err := json.Marshal(ranking)
 	if err != nil {
 		http.Error(writer, "Error on JSON ranking", http.StatusInternalServerError)
 		return
 	}
 
+	writer.Header().Set("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusOK)
-	writer.Write(rankingJSON)
 }

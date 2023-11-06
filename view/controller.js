@@ -18,10 +18,10 @@ document.getElementById('start_game').addEventListener('click', function () {
         }
     })
     .then(response => {
-        if (response.status === 200) {
+        if (response.status === 201) {
             console.log('Starting game...');
             response.json().then(data => {
-                const cards = data.cards;
+                var cards = data.cards;
                 console.log('Cards:', cards);
             });
         } else {
@@ -33,7 +33,7 @@ document.getElementById('start_game').addEventListener('click', function () {
     });
 
     window.location.href = `game.html`;
-    const playerNameCell = "";
+    var playerNameCell = "";
     const buttons = [];
     switch (gameDifficulty) {
         case 'easy':
@@ -46,7 +46,7 @@ document.getElementById('start_game').addEventListener('click', function () {
                 buttons.push(button);
             }
             buttons.forEach((button, index) => {
-                button.setAttribute('data-card-value', cards[index]);
+                button.setAttribute('data-card-value', cards[index].value);
             });
             break;
         case 'medium':
@@ -59,7 +59,7 @@ document.getElementById('start_game').addEventListener('click', function () {
                 buttons.push(button);
             }
             buttons.forEach((button, index) => {
-                button.setAttribute('data-card-value', cards[index]);
+                button.setAttribute('data-card-value', cards[index].value);
             });
         case 'hard':
             playerNameCell = document.querySelector('th#hard_player_name');
@@ -71,7 +71,7 @@ document.getElementById('start_game').addEventListener('click', function () {
                 buttons.push(button);
             }
             buttons.forEach((button, index) => {
-                button.setAttribute('data-card-value', cards[index]);
+                button.setAttribute('data-card-value', cards[index].value);
             });
             break;
         default:
@@ -100,7 +100,7 @@ function handleClick(event) {
                     // Mostrar valor de la carta
                     //document.getElementById(buttonId).style.display = 'none';
                 }
-                console.log('Cards:', cards);
+                console.log('Cards:', data.cards);
             });
         } else {
             console.error('Error on starting game: ', response.statusText);

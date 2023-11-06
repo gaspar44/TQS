@@ -71,7 +71,7 @@ func (g *Game) ChooseCardOnBoard(cardToSelect int) (bool, error) {
 	previousSelectedCard := g.selectedCard
 	card := &g.cards[cardToSelect]
 
-	if card.isDisable {
+	if card.IsDisable {
 		return false, nil
 	}
 

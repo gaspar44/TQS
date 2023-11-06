@@ -11,9 +11,9 @@ func TestCard(t *testing.T) {
 	assert := assert2.New(t)
 	card := NewCard(1)
 
-	assert.Equal(1, card.value)
-	assert.False(card.isVisible)
+	assert.Equal(1, card.Value)
+	assert.False(card.IsVisible)
 
 	card.Click()
-	assert.True(card.isVisible)
+	assert.True(card.IsVisible)
 }
