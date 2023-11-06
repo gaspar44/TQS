@@ -7,6 +7,8 @@ import (
 	assert2 "github.com/stretchr/testify/assert"
 )
 
+// Unit test: Checking "NewGame()" function (easy)
+// Test de cobertura (easy)
 func TestNewGameEasyMode(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -32,6 +34,8 @@ func TestNewGameEasyMode(t *testing.T) {
 	assert.Equal(expectedElements, countedElements)
 }
 
+// Unit test: Checking "NewGame()" function (Medium)
+// Test de cobertura (easy)
 func TestNewGameMediumMode(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -57,6 +61,8 @@ func TestNewGameMediumMode(t *testing.T) {
 	assert.Equal(expectedElements, countedElements)
 }
 
+// Unit test: Checking "NewGame()" function (Hard)
+// Test de cobertura (easy)
 func TestNewGameHardMode(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -83,6 +89,8 @@ func TestNewGameHardMode(t *testing.T) {
 	assert.Equal(expectedElements, countedElements)
 }
 
+// Unit test: Checking "shuffleCards()" functions (Easy)
+// Loop Test ->
 func TestGameEasyModeShuffle(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test2"
@@ -107,6 +115,8 @@ func TestGameEasyModeShuffle(t *testing.T) {
 	assert.True(checkCardsOrder(actualCards, shuffledCards))
 }
 
+// Unit test: Checking "shuffleCards()" functions (Medium)
+// Loop Test ->
 func TestGameMediumModeShuffle(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test2"
@@ -131,6 +141,8 @@ func TestGameMediumModeShuffle(t *testing.T) {
 	assert.True(checkCardsOrder(actualCards, shuffledCards))
 }
 
+// Unit test: Checking "shuffleCards()" functions (Hard)
+// Loop Test ->
 func TestGameHardModeShuffle(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test2"
@@ -155,6 +167,8 @@ func TestGameHardModeShuffle(t *testing.T) {
 	assert.True(checkCardsOrder(actualCards, shuffledCards))
 }
 
+// Unit test: Checking "ChooseCardOnBoard()" function for 1 card  (easy)
+// Equivalent Share: If i can choose 1 card, i can any
 func TestGameEasyModeSingleChooseCard(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -179,6 +193,8 @@ func TestGameEasyModeSingleChooseCard(t *testing.T) {
 	assert.NotEqual(newSelectedCard, previousSelectedCard)
 }
 
+// Unit test: Checking "ChooseCardOnBoard()" function for 2 correct cards (easy)
+// Equivalent Share: If 1 can select a card, i can any (NECESARIO? No dejaria elegir la misma carta)
 func TestGameEasyModeSameCardChose(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -201,6 +217,8 @@ func TestGameEasyModeSameCardChose(t *testing.T) {
 	assert.Equal(newSelectedCard, game.selectedCard)
 }
 
+// Unit test: Checking "ChooseCardOnBoard()" function for 1 card  (Hard)
+// Equivalent Share: If i can choose 1 card, i can any
 func TestGameHardModeSingleChooseCard(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -225,6 +243,8 @@ func TestGameHardModeSingleChooseCard(t *testing.T) {
 	assert.NotEqual(newSelectedCard, previousSelectedCard)
 }
 
+// Unit test: Checking "ChooseCardOnBoard()" function for 1 card (easy)
+// Equivalent Share: If 1 pair of cards are not equal, another pair can also not be
 func TestGameEasyModeWrongCardChose(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -259,6 +279,8 @@ func TestGameEasyModeWrongCardChose(t *testing.T) {
 	assert.Equal(easyDifficultyPenalization+1, game.points)
 }
 
+// Unit test: Checking "ChooseCardOnBoard()" function for 1 card (Medium)
+// Equivalent Share: If 1 pair of cards are not equal, another pair can also not be
 func TestGameMediumModeWrongCardChose(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -293,6 +315,8 @@ func TestGameMediumModeWrongCardChose(t *testing.T) {
 	assert.Equal(mediumDifficultyPenalization+1, game.points)
 }
 
+// Unit test: Checking "ChooseCardOnBoard()" function for 1 card (Hard)
+// Equivalent Share: If 1 pair of cards are not equal, another pair can also not be
 func TestGameHardModeWrongCardChose(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -327,6 +351,8 @@ func TestGameHardModeWrongCardChose(t *testing.T) {
 	assert.Equal(hardDifficultyPenalization+1, game.points)
 }
 
+// Unit test: Checking "ChooseCardOnBoard()" function for 1 card (easy)
+// Equivalent Share:
 func TestGameHardModeChoseSameCardTwice(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -358,6 +384,8 @@ func TestGameHardModeChoseSameCardTwice(t *testing.T) {
 	assert.Equal(1, game.points)
 }
 
+// Unit test: Checking "ChooseCardOnBoard()" function for 1 card (easy)
+// Equivalent Share: If 1 pair of cards are equal, another pair can also be
 func TestGameCorrectCards(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -397,6 +425,8 @@ func TestGameCorrectCards(t *testing.T) {
 	assert.Equal(1, game.points)
 }
 
+// Unit test: Checking "ChooseCardOnBoard()" function for 1 card (easy)
+// Equivalent Share:
 func TestGameSelectDisabledCard(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -440,6 +470,7 @@ func TestGameSelectDisabledCard(t *testing.T) {
 	assert.Equal(-1, newSelectedCard.Position)
 }
 
+// Unit Test: Checking "Stop()" function
 func TestGameStop(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -472,6 +503,8 @@ func TestGameStop(t *testing.T) {
 	assert.Equal(players, setPlayers)
 }
 
+// Unit Test: Checking card position
+// Limit values
 func TestGameInvalidLowerCardSelection(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"

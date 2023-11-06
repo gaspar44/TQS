@@ -62,6 +62,33 @@ func createGame(writer http.ResponseWriter, request *http.Request) {
 	activeGames[playerName] = game
 	writer.WriteHeader(http.StatusCreated)
 	infoLogger.Println("Game created")
+
+	cards := game.GetCards()
+
+	cardsJSON := make([]int, len(cards))
+	for i, card := range cards {
+		cardsJSON[i] = card.GetValue()
+	}
+
+	response := struct {
+		Cards []int `json:"cards"`
+	}{Cards: cardsJSON}
+
+	writer.Header().Set("Content-Type", "application/json")
+
+	responseJSON, err := json.Marshal(response)
+	if err != nil {
+		debugLogger.Println(err.Error())
+		http.Error(writer, "Error on JSON marshaling", http.StatusInternalServerError)
+		return
+	}
+
+	_, err = writer.Write(responseJSON)
+	if err != nil {
+		debugLogger.Println(err.Error())
+		http.Error(writer, "Error writing response", http.StatusInternalServerError)
+		return
+	}
 }
 
 func chooseCard(writer http.ResponseWriter, request *http.Request) {
@@ -112,4 +139,35 @@ func chooseCard(writer http.ResponseWriter, request *http.Request) {
 		writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+}
+
+func displayRanking(writer http.ResponseWriter, request *http.Request) {
+	dumpHttpRequest, _ := httputil.DumpRequest(request, true)
+	debugLogger.Println(string(dumpHttpRequest))
+
+	if request.Method != http.MethodGet {
+		infoLogger.Println("Invalid http method:" + request.Method)
+		writer.WriteHeader(http.StatusMethodNotAllowed)
+		writer.Header().Set("Access-Control-Allow-Methods", http.MethodPost)
+		return
+	}
+
+	ranking, err := model.GetRankingInstance()
+
+	if err != nil {
+		debugLogger.Println(err.Error())
+		http.Error(writer, "Error while getting ranking", http.StatusInternalServerError)
+		return
+	}
+
+	writer.Header().Set("Content-Type", "application/json")
+
+	rankingJSON, err := json.Marshal(ranking)
+	if err != nil {
+		http.Error(writer, "Error on JSON ranking", http.StatusInternalServerError)
+		return
+	}
+
+	writer.WriteHeader(http.StatusOK)
+	writer.Write(rankingJSON)
 }

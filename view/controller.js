@@ -20,6 +20,10 @@ document.getElementById('start_game').addEventListener('click', function () {
     .then(response => {
         if (response.status === 200) {
             console.log('Starting game...');
+            response.json().then(data => {
+                const cards = data.cards;
+                console.log('Cards:', cards);
+            });
         } else {
             console.error('Error on starting game: ', response.statusText);
         }
@@ -27,15 +31,107 @@ document.getElementById('start_game').addEventListener('click', function () {
     .catch(error => {
         console.error('Error on starting game: ', error);
     });
+
     window.location.href = `game.html`;
-    const playerNameCell = document.querySelector('table th');
+    const playerNameCell = "";
+    const buttons = [];
+    switch (gameDifficulty) {
+        case 'easy':
+            playerNameCell = document.querySelector('th#easy_player_name');
+            document.getElementById('game_board_medium').style.display = 'none';
+            document.getElementById('game_board_hard').style.display = 'none';
+            for (let i = 0; i < 6; i++) {
+                const buttonId = `card_easy_${i}`;
+                const button = document.getElementById(buttonId);
+                buttons.push(button);
+            }
+            buttons.forEach((button, index) => {
+                button.setAttribute('data-card-value', cards[index]);
+            });
+            break;
+        case 'medium':
+            playerNameCell = document.querySelector('th#medium_player_name');
+            document.getElementById('game_board_easy').style.display = 'none';
+            document.getElementById('game_board_hard').style.display = 'none';
+            for (let i = 0; i < 6; i++) {
+                const buttonId = `card_medium_${i}`;
+                const button = document.getElementById(buttonId);
+                buttons.push(button);
+            }
+            buttons.forEach((button, index) => {
+                button.setAttribute('data-card-value', cards[index]);
+            });
+        case 'hard':
+            playerNameCell = document.querySelector('th#hard_player_name');
+            document.getElementById('game_board_easy').style.display = 'none';
+            document.getElementById('game_board_medium').style.display = 'none';
+            for (let i = 0; i < 6; i++) {
+                const buttonId = `card_hard__${i}`;
+                const button = document.getElementById(buttonId);
+                buttons.push(button);
+            }
+            buttons.forEach((button, index) => {
+                button.setAttribute('data-card-value', cards[index]);
+            });
+            break;
+        default:
+            break;
+    }
     playerNameCell.textContent = playerName;
+
+});
+
+// Click on card
+function handleClick(event) {
+    const buttonId = event.target.id;
+    const cardValue = event.target.getAttribute('data-card-value');
+
+    fetch('/chooseCard', {
+        method: 'POST',
+        body: JSON.stringify({ playerName, cardValue }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => {
+        if (response.status === 200) {
+            response.json().then(data => {
+                if (data.Success === true) {
+                    // Mostrar valor de la carta
+                    //document.getElementById(buttonId).style.display = 'none';
+                }
+                console.log('Cards:', cards);
+            });
+        } else {
+            console.error('Error on starting game: ', response.statusText);
+        }
+    })
+    .catch(error => {
+        console.error('Error on starting game: ', error);
+    });
+
+
+}
+document.querySelectorAll('button').forEach(button => {
+    button.addEventListener('click', handleClick);
 });
 
 // Ranking
 document.getElementById('ranking').addEventListener('click', function () {
-    // Lógica para mostrar el ranking
-    alert('Showing ranking...');
+    fetch('/getRanking', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+        .then(data => {
+            const gameRankingDiv = document.getElementById('game_ranking');
+            gameRankingDiv.innerHTML = JSON.stringify(data, null, 2);
+        })
+        .catch(error => {
+            console.error('Error obtaining ranking:', error);
+        });    
 });
 
 // Exit
