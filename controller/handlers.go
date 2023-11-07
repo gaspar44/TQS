@@ -28,8 +28,8 @@ func createGame(writer http.ResponseWriter, request *http.Request) {
 
 	if request.Method != http.MethodPost {
 		infoLogger.Println("Invalid http method:" + request.Method)
-		writer.WriteHeader(http.StatusMethodNotAllowed)
 		writer.Header().Set("Access-Control-Allow-Methods", http.MethodPost)
+		writer.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -60,7 +60,6 @@ func createGame(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	activeGames[playerName] = game
-	writer.WriteHeader(http.StatusCreated)
 	infoLogger.Println("Game created")
 
 	cards := game.GetCards()
@@ -71,13 +70,15 @@ func createGame(writer http.ResponseWriter, request *http.Request) {
 
 	encoder := json.NewEncoder(writer)
 	err = encoder.Encode(response)
+
 	if err != nil {
 		debugLogger.Println(err.Error())
-		http.Error(writer, "Error on JSON marshaling", http.StatusInternalServerError)
+		http.Error(writer, "Error on JSON marshaling", http.StatusBadRequest)
 		return
 	}
 
 	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusCreated)
 }
 
 func chooseCard(writer http.ResponseWriter, request *http.Request) {
@@ -86,8 +87,8 @@ func chooseCard(writer http.ResponseWriter, request *http.Request) {
 
 	if request.Method != http.MethodPost {
 		infoLogger.Println("Invalid http method:" + request.Method)
-		writer.WriteHeader(http.StatusMethodNotAllowed)
 		writer.Header().Set("Access-Control-Allow-Methods", http.MethodPost)
+		writer.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -122,6 +123,7 @@ func chooseCard(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	encoder := json.NewEncoder(writer)
+	writer.Header().Set("Content-Type", "application/json")
 	err = encoder.Encode(choiceResponse)
 
 	if err != nil {
@@ -129,6 +131,7 @@ func chooseCard(writer http.ResponseWriter, request *http.Request) {
 		writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
+
 }
 
 func displayRanking(writer http.ResponseWriter, request *http.Request) {

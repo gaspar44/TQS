@@ -15,11 +15,8 @@ import (
 )
 
 const (
-	serverUrl                  = "http://localhost:8080"
-	debugFileName              = "requests.txt"
-	easyDifficultyCardsTotal   = 6
-	mediumDifficultyCardsTotal = 10
-	hardDifficultyCardsTotal   = 16
+	serverUrl     = "http://localhost:8080"
+	debugFileName = "requests.txt"
 )
 
 func TestMain(m *testing.M) {
@@ -91,5 +88,33 @@ func TestCreateGame(t *testing.T) {
 	assert.Nil(err)
 	assert.Equal(http.StatusCreated, response.StatusCode)
 	assert.Equal(playerName, gameResponse.PlayerName)
-	assert.Equal(easyDifficultyCardsTotal, len(gameResponse.Cards))
+	assert.Equal(model.EasyDifficultyCardsTotal, len(gameResponse.Cards))
+}
+
+func TestCreateGameGetMethod(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	request := createGameRequest{
+		PlayerName:     playerName,
+		GameDifficulty: model.Easy,
+	}
+
+	body, err := json.Marshal(request)
+	assert.Nil(err)
+	assert.NotEmpty(body)
+
+	gameCreationRequest, err := http.NewRequest(http.MethodGet, serverUrl+CreateGame, bytes.NewBuffer(body))
+	assert.Nil(err)
+	gameCreationRequest.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	response, err := client.Do(gameCreationRequest)
+	assert.Nil(err)
+
+	defer response.Body.Close()
+
+	assert.Nil(err)
+	assert.Equal(http.StatusMethodNotAllowed, response.StatusCode)
+	assert.Equal(http.MethodPost, response.Header.Get("Access-Control-Allow-Methods"))
 }

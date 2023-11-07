@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	easyDifficultyCardsTotal     = 6
-	mediumDifficultyCardsTotal   = 10
-	hardDifficultyCardsTotal     = 16
+	EasyDifficultyCardsTotal     = 6
+	MediumDifficultyCardsTotal   = 10
+	HardDifficultyCardsTotal     = 16
 	easyDifficultyPenalization   = 1
 	mediumDifficultyPenalization = 3
 	hardDifficultyPenalization   = 5
@@ -142,21 +142,21 @@ func (g *Game) createCards(difficulty Difficulty) error {
 
 	switch difficulty {
 	case Easy:
-		for i := 0; i < easyDifficultyCardsTotal/2; i++ {
+		for i := 0; i < EasyDifficultyCardsTotal/2; i++ {
 			newCard := NewCard(i)
 			newCardPair := NewCard(i)
 			cards = append(cards, newCard)
 			cards = append(cards, newCardPair)
 		}
 	case Medium:
-		for i := 0; i < mediumDifficultyCardsTotal/2; i++ {
+		for i := 0; i < MediumDifficultyCardsTotal/2; i++ {
 			newCard := NewCard(i)
 			newCardPair := NewCard(i)
 			cards = append(cards, newCard)
 			cards = append(cards, newCardPair)
 		}
 	case Hard:
-		for i := 0; i < hardDifficultyCardsTotal/2; i++ {
+		for i := 0; i < HardDifficultyCardsTotal/2; i++ {
 			newCard := NewCard(i)
 			newCardPair := NewCard(i)
 			cards = append(cards, newCard)
