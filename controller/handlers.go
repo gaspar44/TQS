@@ -69,6 +69,8 @@ func createGame(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	encoder := json.NewEncoder(writer)
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusCreated)
 	err = encoder.Encode(response)
 
 	if err != nil {
@@ -76,9 +78,6 @@ func createGame(writer http.ResponseWriter, request *http.Request) {
 		http.Error(writer, "Error on JSON marshaling", http.StatusBadRequest)
 		return
 	}
-
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusCreated)
 }
 
 func chooseCard(writer http.ResponseWriter, request *http.Request) {
