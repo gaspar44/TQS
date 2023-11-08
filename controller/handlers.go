@@ -25,6 +25,7 @@ func (handler *defaultHandler) ServeHTTP(writer http.ResponseWriter, request *ht
 func createGame(writer http.ResponseWriter, request *http.Request) {
 	dumpHttpRequest, _ := httputil.DumpRequest(request, true)
 	debugLogger.Println(string(dumpHttpRequest))
+	defer request.Body.Close()
 
 	if request.Method != http.MethodPost {
 		infoLogger.Println("Invalid http method:" + request.Method)
@@ -33,8 +34,15 @@ func createGame(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
+	if request.Header.Get("Content-Type") != "application/json" {
+		infoLogger.Println("Unsupported type:" + request.Header.Get("Content-Type"))
+		writer.WriteHeader(http.StatusUnsupportedMediaType)
+		return
+	}
+
 	var bodyData createGameRequest
 	decoder := json.NewDecoder(request.Body)
+	decoder.DisallowUnknownFields()
 
 	if err := decoder.Decode(&bodyData); err != nil {
 		debugLogger.Println(err.Error())
@@ -47,7 +55,20 @@ func createGame(writer http.ResponseWriter, request *http.Request) {
 
 	if _, exists := activeGames[playerName]; exists {
 		infoLogger.Println("Game already exists")
-		writer.WriteHeader(http.StatusOK)
+		game := activeGames[playerName]
+		cards := game.GetCards()
+
+		response := createGameResponse{
+			PlayerName: playerName,
+			Cards:      cards,
+		}
+
+		writer.Header().Set("Content-Type", "application/json")
+		encoder := json.NewEncoder(writer)
+		err := encoder.Encode(response)
+		if err != nil {
+			debugLogger.Println(err.Error())
+		}
 		return
 	}
 
