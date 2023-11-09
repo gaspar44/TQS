@@ -10,6 +10,7 @@ type createGameRequest struct {
 type createGameResponse struct {
 	PlayerName string       `json:"player_name"`
 	Cards      []model.Card `json:"cards"`
+	Points     int          `json:"points"`
 }
 
 type choiceCardRequest struct {
@@ -21,4 +22,5 @@ type choiceCardResponse struct {
 	PlayerName string       `json:"player_name"`
 	Success    bool         `json:"success"`
 	Cards      []model.Card `json:"cards"`
+	Points     int          `json:"points"`
 }

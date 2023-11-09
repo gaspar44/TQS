@@ -45,7 +45,7 @@ func TestNewGameMediumMode(t *testing.T) {
 	assert.Equal(playerName, game.playerName)
 	assert.True(game.initialized)
 	assert.Equal(MediumDifficultyCardsTotal, len(game.GetCards()))
-	assert.Equal(0, game.points)
+	assert.Equal(0, game.GetPoints())
 	assert.Equal(-1, game.selectedCard.Card.Value)
 	assert.False(game.selectedCard.Card.IsVisible)
 	assert.False(game.selectedCard.Card.IsDisable)

@@ -133,6 +133,10 @@ func (g *Game) shuffleCards() {
 	})
 }
 
+func (g *Game) GetPoints() int {
+	return g.points
+}
+
 func (g *Game) createCards(difficulty Difficulty) error {
 	cards := make([]Card, 0)
 

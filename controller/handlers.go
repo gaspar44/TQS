@@ -57,10 +57,12 @@ func createGame(writer http.ResponseWriter, request *http.Request) {
 		infoLogger.Println("Game already exists")
 		game := activeGames[playerName]
 		cards := game.GetCards()
+		points := game.GetPoints()
 
 		response := createGameResponse{
 			PlayerName: playerName,
 			Cards:      cards,
+			Points:     points,
 		}
 
 		writer.Header().Set("Content-Type", "application/json")
@@ -140,6 +142,7 @@ func chooseCard(writer http.ResponseWriter, request *http.Request) {
 		PlayerName: choiceRequest.PlayerName,
 		Success:    correct,
 		Cards:      game.GetCards(),
+		Points:     game.GetPoints(),
 	}
 
 	encoder := json.NewEncoder(writer)
@@ -174,13 +177,11 @@ func displayRanking(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	encoder := json.NewEncoder(writer)
+	writer.Header().Set("Content-Type", "application/json")
 	err = encoder.Encode(ranking)
 
 	if err != nil {
 		http.Error(writer, "Error on JSON ranking", http.StatusInternalServerError)
-		return
 	}
 
-	writer.Header().Set("Content-Type", "application/json")
-	writer.WriteHeader(http.StatusOK)
 }
