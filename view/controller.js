@@ -12,7 +12,7 @@ document.getElementById('start_game').addEventListener('click', function () {
 
     fetch('http://localhost:8080/createGame', {
         method: 'POST',
-        body: JSON.stringify({ player_name: playerName , difficulty:gameDifficulty }),
+        body: JSON.stringify({ player_name: playerName , difficulty:parseInt(gameDifficulty) }),
         headers: {
             'Content-Type': 'application/json'
         }
@@ -23,6 +23,52 @@ document.getElementById('start_game').addEventListener('click', function () {
             response.json().then(data => {
                 var cards = data.cards;
                 console.log('Cards:', cards);
+                window.location.href = `game.html`;
+                var playerNameCell = "";
+                const buttons = [];
+                switch (gameDifficulty) {
+                    case 'easy':
+                        playerNameCell = document.querySelector('th#easy_player_name');
+                        document.getElementById('game_board_medium').style.display = 'none';
+                        document.getElementById('game_board_hard').style.display = 'none';
+                        for (let i = 0; i < 6; i++) {
+                            const buttonId = `card_easy_${i}`;
+                            const button = document.getElementById(buttonId);
+                            buttons.push(button);
+                        }
+                        buttons.forEach((button, index) => {
+                            button.setAttribute('data-card-value', cards[index].value);
+                        });
+                        break;
+                    case 'medium':
+                        playerNameCell = document.querySelector('th#medium_player_name');
+                        document.getElementById('game_board_easy').style.display = 'none';
+                        document.getElementById('game_board_hard').style.display = 'none';
+                        for (let i = 0; i < 6; i++) {
+                            const buttonId = `card_medium_${i}`;
+                            const button = document.getElementById(buttonId);
+                            buttons.push(button);
+                        }
+                        buttons.forEach((button, index) => {
+                            button.setAttribute('data-card-value', cards[index].value);
+                        });
+                    case 'hard':
+                        playerNameCell = document.querySelector('th#hard_player_name');
+                        document.getElementById('game_board_easy').style.display = 'none';
+                        document.getElementById('game_board_medium').style.display = 'none';
+                        for (let i = 0; i < 6; i++) {
+                            const buttonId = `card_hard__${i}`;
+                            const button = document.getElementById(buttonId);
+                            buttons.push(button);
+                        }
+                        buttons.forEach((button, index) => {
+                            button.setAttribute('data-card-value', cards[index].value);
+                        });
+                        break;
+                    default:
+                        break;
+                }
+                playerNameCell.textContent = player_name;
             });
         } else {
             console.error('Error on starting game: ', response.statusText);
@@ -31,54 +77,6 @@ document.getElementById('start_game').addEventListener('click', function () {
     .catch(error => {
         console.error('Error on starting game: ', error);
     });
-
-    // window.location.href = `game.html`;
-    // var playerNameCell = "";
-    // const buttons = [];
-    // switch (gameDifficulty) {
-    //     case 'easy':
-    //         playerNameCell = document.querySelector('th#easy_player_name');
-    //         document.getElementById('game_board_medium').style.display = 'none';
-    //         document.getElementById('game_board_hard').style.display = 'none';
-    //         for (let i = 0; i < 6; i++) {
-    //             const buttonId = `card_easy_${i}`;
-    //             const button = document.getElementById(buttonId);
-    //             buttons.push(button);
-    //         }
-    //         buttons.forEach((button, index) => {
-    //             button.setAttribute('data-card-value', cards[index].value);
-    //         });
-    //         break;
-    //     case 'medium':
-    //         playerNameCell = document.querySelector('th#medium_player_name');
-    //         document.getElementById('game_board_easy').style.display = 'none';
-    //         document.getElementById('game_board_hard').style.display = 'none';
-    //         for (let i = 0; i < 6; i++) {
-    //             const buttonId = `card_medium_${i}`;
-    //             const button = document.getElementById(buttonId);
-    //             buttons.push(button);
-    //         }
-    //         buttons.forEach((button, index) => {
-    //             button.setAttribute('data-card-value', cards[index].value);
-    //         });
-    //     case 'hard':
-    //         playerNameCell = document.querySelector('th#hard_player_name');
-    //         document.getElementById('game_board_easy').style.display = 'none';
-    //         document.getElementById('game_board_medium').style.display = 'none';
-    //         for (let i = 0; i < 6; i++) {
-    //             const buttonId = `card_hard__${i}`;
-    //             const button = document.getElementById(buttonId);
-    //             buttons.push(button);
-    //         }
-    //         buttons.forEach((button, index) => {
-    //             button.setAttribute('data-card-value', cards[index].value);
-    //         });
-    //         break;
-    //     default:
-    //         break;
-    // }
-    playerNameCell.textContent = player_name;
-
 });
 
 // Click on card
