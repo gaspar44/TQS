@@ -42,6 +42,7 @@ func createGame(writer http.ResponseWriter, request *http.Request) {
 	defer request.Body.Close()
 	if request.Method != http.MethodPost {
 		infoLogger.Println("Invalid http method:" + request.Method)
+		writer.Header().Set("Access-Control-Allow-Methods", http.MethodPost)
 		writer.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
