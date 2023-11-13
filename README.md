@@ -1,6 +1,7 @@
 # Memory game
 
 This will be a simple memory game server written in Go.
+[Docker](https://www.docker.com/) and [docker compose](https://docs.docker.com/compose/) are needed in order to execute the server.
 
 ### Compilation instructions
 1. Download Go 1.21.2 from the [Official Page](https://go.dev/doc/install).

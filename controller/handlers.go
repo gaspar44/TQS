@@ -18,18 +18,30 @@ type defaultHandler struct{}
 func (handler *defaultHandler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	fmt.Print(request.URL.Path) // TODO: check on HTTP parameters
 	if handlerFunction, ok := mux[request.URL.String()]; ok {
+		if request.Method == http.MethodOptions {
+			writer.Header().Set("Access-Control-Allow-Origin", "*")
+			writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+			writer.Header().Set("Access-Control-Allow-Methods", http.MethodGet+" ,"+http.MethodPost)
+			return
+		}
+
 		handlerFunction(writer, request)
 	}
+}
+func welcome(writer http.ResponseWriter, request *http.Request) {
+	dumpHttpRequest, _ := httputil.DumpRequest(request, true)
+	debugLogger.Println(string(dumpHttpRequest))
+	defer request.Body.Close()
+
+	writer.Write([]byte("Welcome to the memory game!. Integration will be in other step"))
 }
 
 func createGame(writer http.ResponseWriter, request *http.Request) {
 	dumpHttpRequest, _ := httputil.DumpRequest(request, true)
 	debugLogger.Println(string(dumpHttpRequest))
 	defer request.Body.Close()
-
 	if request.Method != http.MethodPost {
 		infoLogger.Println("Invalid http method:" + request.Method)
-		writer.Header().Set("Access-Control-Allow-Methods", http.MethodPost)
 		writer.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}

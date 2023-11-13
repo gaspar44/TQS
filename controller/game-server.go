@@ -9,8 +9,7 @@ import (
 )
 
 const (
-	Port       string = ":8080"
-	fileSystem        = http.Dir("./view")
+	Port string = ":8080"
 )
 
 var (
@@ -34,8 +33,7 @@ func NewServerWithLogger(out io.Writer) *http.Server {
 	activeGames = make(map[string]*model.Game)
 	mux = make(map[string]func(writer http.ResponseWriter, requestBody *http.Request))
 
-	fileServer := http.FileServer(fileSystem)
-	mux["/"] = fileServer.ServeHTTP
+	mux["/"] = welcome
 	mux[CreateGame] = createGame
 	mux[GetRanking] = displayRanking
 	mux[ChooseCard] = chooseCard

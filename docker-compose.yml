@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+  httpd:
+    build: view
+    #network_mode: "host"
+    volumes:
+      - /home/gaspar/go/src/TQS/view:/usr/local/apache2/htdocs/:ro
+
+  server:
+    build: .
+    #network_mode: "host"

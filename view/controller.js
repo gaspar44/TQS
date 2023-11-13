@@ -10,9 +10,9 @@ document.getElementById('start_game').addEventListener('click', function () {
     const playerName = document.getElementById('player_name').value;
     const gameDifficulty = document.getElementById('difficulty').value;
 
-    fetch('/createGame', {
+    fetch('http://localhost:8080/createGame', {
         method: 'POST',
-        body: JSON.stringify({ playerName, gameDifficulty }),
+        body: JSON.stringify({ player_name: playerName , difficulty:gameDifficulty }),
         headers: {
             'Content-Type': 'application/json'
         }
@@ -32,52 +32,52 @@ document.getElementById('start_game').addEventListener('click', function () {
         console.error('Error on starting game: ', error);
     });
 
-    window.location.href = `game.html`;
-    var playerNameCell = "";
-    const buttons = [];
-    switch (gameDifficulty) {
-        case 'easy':
-            playerNameCell = document.querySelector('th#easy_player_name');
-            document.getElementById('game_board_medium').style.display = 'none';
-            document.getElementById('game_board_hard').style.display = 'none';
-            for (let i = 0; i < 6; i++) {
-                const buttonId = `card_easy_${i}`;
-                const button = document.getElementById(buttonId);
-                buttons.push(button);
-            }
-            buttons.forEach((button, index) => {
-                button.setAttribute('data-card-value', cards[index].value);
-            });
-            break;
-        case 'medium':
-            playerNameCell = document.querySelector('th#medium_player_name');
-            document.getElementById('game_board_easy').style.display = 'none';
-            document.getElementById('game_board_hard').style.display = 'none';
-            for (let i = 0; i < 6; i++) {
-                const buttonId = `card_medium_${i}`;
-                const button = document.getElementById(buttonId);
-                buttons.push(button);
-            }
-            buttons.forEach((button, index) => {
-                button.setAttribute('data-card-value', cards[index].value);
-            });
-        case 'hard':
-            playerNameCell = document.querySelector('th#hard_player_name');
-            document.getElementById('game_board_easy').style.display = 'none';
-            document.getElementById('game_board_medium').style.display = 'none';
-            for (let i = 0; i < 6; i++) {
-                const buttonId = `card_hard__${i}`;
-                const button = document.getElementById(buttonId);
-                buttons.push(button);
-            }
-            buttons.forEach((button, index) => {
-                button.setAttribute('data-card-value', cards[index].value);
-            });
-            break;
-        default:
-            break;
-    }
-    playerNameCell.textContent = playerName;
+    // window.location.href = `game.html`;
+    // var playerNameCell = "";
+    // const buttons = [];
+    // switch (gameDifficulty) {
+    //     case 'easy':
+    //         playerNameCell = document.querySelector('th#easy_player_name');
+    //         document.getElementById('game_board_medium').style.display = 'none';
+    //         document.getElementById('game_board_hard').style.display = 'none';
+    //         for (let i = 0; i < 6; i++) {
+    //             const buttonId = `card_easy_${i}`;
+    //             const button = document.getElementById(buttonId);
+    //             buttons.push(button);
+    //         }
+    //         buttons.forEach((button, index) => {
+    //             button.setAttribute('data-card-value', cards[index].value);
+    //         });
+    //         break;
+    //     case 'medium':
+    //         playerNameCell = document.querySelector('th#medium_player_name');
+    //         document.getElementById('game_board_easy').style.display = 'none';
+    //         document.getElementById('game_board_hard').style.display = 'none';
+    //         for (let i = 0; i < 6; i++) {
+    //             const buttonId = `card_medium_${i}`;
+    //             const button = document.getElementById(buttonId);
+    //             buttons.push(button);
+    //         }
+    //         buttons.forEach((button, index) => {
+    //             button.setAttribute('data-card-value', cards[index].value);
+    //         });
+    //     case 'hard':
+    //         playerNameCell = document.querySelector('th#hard_player_name');
+    //         document.getElementById('game_board_easy').style.display = 'none';
+    //         document.getElementById('game_board_medium').style.display = 'none';
+    //         for (let i = 0; i < 6; i++) {
+    //             const buttonId = `card_hard__${i}`;
+    //             const button = document.getElementById(buttonId);
+    //             buttons.push(button);
+    //         }
+    //         buttons.forEach((button, index) => {
+    //             button.setAttribute('data-card-value', cards[index].value);
+    //         });
+    //         break;
+    //     default:
+    //         break;
+    // }
+    playerNameCell.textContent = player_name;
 
 });
 
@@ -86,9 +86,9 @@ function handleClick(event) {
     const buttonId = event.target.id;
     const cardValue = event.target.getAttribute('data-card-value');
 
-    fetch('/chooseCard', {
+    fetch('http://localhost:8080/chooseCard', {
         method: 'POST',
-        body: JSON.stringify({ playerName, cardValue }),
+        body: JSON.stringify({ player_name, card_choice }),
         headers: {
             'Content-Type': 'application/json'
         }
@@ -118,7 +118,7 @@ document.querySelectorAll('button').forEach(button => {
 
 // Ranking
 document.getElementById('ranking').addEventListener('click', function () {
-    fetch('/getRanking', {
+    fetch('http://localhost:8080/getRanking', {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
