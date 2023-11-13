@@ -10,6 +10,32 @@ document.getElementById('start_game').addEventListener('click', function () {
     const playerName = document.getElementById('player_name').value;
     const gameDifficulty = document.getElementById('difficulty').value;
 
+    window.location.href = `game.html`;
+    var playerNameCell = "";
+    const buttons = [];
+
+    // Setting board
+    switch (gameDifficulty) {
+        case 'easy':
+            playerNameCell = document.querySelector('th#easy_player_name');
+            document.getElementById('game_board_medium').style.display = 'none';
+            document.getElementById('game_board_hard').style.display = 'none';
+            break;
+        case 'medium':
+            playerNameCell = document.querySelector('th#medium_player_name');
+            document.getElementById('game_board_easy').style.display = 'none';
+            document.getElementById('game_board_hard').style.display = 'none';
+            break;
+        case 'hard':
+            playerNameCell = document.querySelector('th#hard_player_name');
+            document.getElementById('game_board_easy').style.display = 'none';
+            document.getElementById('game_board_medium').style.display = 'none';
+            break;
+        default:
+            break;
+    }
+    playerNameCell.textContent = playerName;
+
     fetch('http://localhost:8080/createGame', {
         method: 'POST',
         body: JSON.stringify({ player_name: playerName , difficulty:parseInt(gameDifficulty) }),
@@ -19,56 +45,40 @@ document.getElementById('start_game').addEventListener('click', function () {
     })
     .then(response => {
         if (response.status === 201) {
-            console.log('Starting game...');
             response.json().then(data => {
-                var cards = data.cards;
-                console.log('Cards:', cards);
-                window.location.href = `game.html`;
-                var playerNameCell = "";
-                const buttons = [];
+                console.log('Data: ', data)
+                const cards = data.cards;   
+                
+                // Setting cards
                 switch (gameDifficulty) {
                     case 'easy':
-                        playerNameCell = document.querySelector('th#easy_player_name');
-                        document.getElementById('game_board_medium').style.display = 'none';
-                        document.getElementById('game_board_hard').style.display = 'none';
-                        for (let i = 0; i < 6; i++) {
+                        for (let i = 0; i < length(cards); i++) {
                             const buttonId = `card_easy_${i}`;
                             const button = document.getElementById(buttonId);
                             buttons.push(button);
-                        }
-                        buttons.forEach((button, index) => {
-                            button.setAttribute('data-card-value', cards[index].value);
-                        });
+                        }                        
                         break;
                     case 'medium':
-                        playerNameCell = document.querySelector('th#medium_player_name');
-                        document.getElementById('game_board_easy').style.display = 'none';
-                        document.getElementById('game_board_hard').style.display = 'none';
-                        for (let i = 0; i < 6; i++) {
+                        for (let i = 0; i < length(cards); i++) {
                             const buttonId = `card_medium_${i}`;
                             const button = document.getElementById(buttonId);
                             buttons.push(button);
                         }
-                        buttons.forEach((button, index) => {
-                            button.setAttribute('data-card-value', cards[index].value);
-                        });
+                        break;
                     case 'hard':
-                        playerNameCell = document.querySelector('th#hard_player_name');
-                        document.getElementById('game_board_easy').style.display = 'none';
-                        document.getElementById('game_board_medium').style.display = 'none';
-                        for (let i = 0; i < 6; i++) {
+                        for (let i = 0; i < length(cards); i++) {
                             const buttonId = `card_hard__${i}`;
                             const button = document.getElementById(buttonId);
                             buttons.push(button);
                         }
-                        buttons.forEach((button, index) => {
-                            button.setAttribute('data-card-value', cards[index].value);
-                        });
                         break;
                     default:
                         break;
                 }
-                playerNameCell.textContent = player_name;
+                // Assign card values
+                buttons.forEach((button, index) => {
+                    button.setAttribute('data-card-value', cards[index].Value);
+                });
             });
         } else {
             console.error('Error on starting game: ', response.statusText);
@@ -81,9 +91,6 @@ document.getElementById('start_game').addEventListener('click', function () {
 
 // Click on card
 function handleClick(event) {
-    const buttonId = event.target.id;
-    const cardValue = event.target.getAttribute('data-card-value');
-
     fetch('http://localhost:8080/chooseCard', {
         method: 'POST',
         body: JSON.stringify({ player_name, card_choice }),
@@ -93,12 +100,26 @@ function handleClick(event) {
     })
     .then(response => {
         if (response.status === 200) {
-            response.json().then(data => {
+            response.json().then(data => {             
                 if (data.Success === true) {
-                    // Mostrar valor de la carta
-                    //document.getElementById(buttonId).style.display = 'none';
+                    const buttonId = event.target.id;
+                    const cardValue = event.target.getAttribute('data-card-value');
+                    document.getElementById(buttonId).textContent = cardValue;
+                } else {
+                    const board = document.getElementById("board"); 
+                    const buttons = board.querySelectorAll("button");
+                    
+                    buttons.forEach((button) => {
+                        const isButtonVisible = window.getComputedStyle(button).display !== "none";   
+
+                        if (isButtonVisible) {
+                            const dataCardValue = button.getAttribute("data-card-value");
+                            if (dataCardValue === valorComparar) {
+                                document.getElementById(buttonId).textContent = buttonId.value;
+                            }
+                        }
+                    })
                 }
-                console.log('Cards:', data.cards);
             });
         } else {
             console.error('Error on starting game: ', response.statusText);
