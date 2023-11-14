@@ -1,11 +1,3 @@
-/* Menu functions */
-
-// Start
-document.getElementById('start').addEventListener('click', function () {
-    document.getElementById('main_menu').style.display = 'none';
-    document.getElementById('name_difficulty').style.display = 'block';
-});
-
 document.getElementById('start_game').addEventListener('click', function () {
     const playerName = document.getElementById('player_name').value;
     const gameDifficulty = document.getElementById('difficulty').value;
@@ -23,11 +15,10 @@ document.getElementById('start_game').addEventListener('click', function () {
             response.json().then(data => {
                 var cards = data.cards;
                 console.log('Cards:', cards);
-                window.location.href = `game.html`;
-                var playerNameCell = "";
+                let playerNameCell;
                 const buttons = [];
                 switch (gameDifficulty) {
-                    case 'easy':
+                    case 0:
                         playerNameCell = document.querySelector('th#easy_player_name');
                         document.getElementById('game_board_medium').style.display = 'none';
                         document.getElementById('game_board_hard').style.display = 'none';
@@ -40,7 +31,7 @@ document.getElementById('start_game').addEventListener('click', function () {
                             button.setAttribute('data-card-value', cards[index].value);
                         });
                         break;
-                    case 'medium':
+                    case 1:
                         playerNameCell = document.querySelector('th#medium_player_name');
                         document.getElementById('game_board_easy').style.display = 'none';
                         document.getElementById('game_board_hard').style.display = 'none';
@@ -52,7 +43,8 @@ document.getElementById('start_game').addEventListener('click', function () {
                         buttons.forEach((button, index) => {
                             button.setAttribute('data-card-value', cards[index].value);
                         });
-                    case 'hard':
+                        break;
+                    case 2:
                         playerNameCell = document.querySelector('th#hard_player_name');
                         document.getElementById('game_board_easy').style.display = 'none';
                         document.getElementById('game_board_medium').style.display = 'none';
@@ -68,7 +60,7 @@ document.getElementById('start_game').addEventListener('click', function () {
                     default:
                         break;
                 }
-                playerNameCell.textContent = player_name;
+                playerNameCell.textContent = data.player_name;
             });
         } else {
             console.error('Error on starting game: ', response.statusText);
@@ -113,29 +105,3 @@ function handleClick(event) {
 document.querySelectorAll('button').forEach(button => {
     button.addEventListener('click', handleClick);
 });
-
-// Ranking
-document.getElementById('ranking').addEventListener('click', function () {
-    fetch('http://localhost:8080/getRanking', {
-        method: 'GET',
-        headers: {
-            'Content-Type': 'application/json'
-        }
-    })
-    .then(response => response.json())
-        .then(data => {
-            const gameRankingDiv = document.getElementById('game_ranking');
-            gameRankingDiv.innerHTML = JSON.stringify(data, null, 2);
-        })
-        .catch(error => {
-            console.error('Error obtaining ranking:', error);
-        });    
-});
-
-// Exit
-document.getElementById('exit').addEventListener('click', function () {
-    if (confirm('Are you sure you want to exit?')) {
-        window.close();
-    }
-});
-

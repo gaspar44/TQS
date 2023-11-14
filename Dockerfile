@@ -5,7 +5,6 @@ WORKDIR $GOPATH/src/TQS
 RUN ./build.sh
 
 FROM debian:10.13
-#FROM alpine
 RUN mkdir -p /home/memoryServer
 WORKDIR /home/memoryServer
 COPY --from=builder /go/src/TQS/build/server /home/memoryServer

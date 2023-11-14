@@ -18,8 +18,8 @@ type defaultHandler struct{}
 func (handler *defaultHandler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
 	fmt.Print(request.URL.Path) // TODO: check on HTTP parameters
 	if handlerFunction, ok := mux[request.URL.String()]; ok {
+		writer.Header().Set("Access-Control-Allow-Origin", "*")
 		if request.Method == http.MethodOptions {
-			writer.Header().Set("Access-Control-Allow-Origin", "*")
 			writer.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 			writer.Header().Set("Access-Control-Allow-Methods", http.MethodGet+" ,"+http.MethodPost)
 			return
