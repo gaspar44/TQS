@@ -41,7 +41,7 @@ func (r *Ranking) SetPlayers(players []Player) {
 	}
 }
 
-func (r *Ranking) release() {
+func (r *Ranking) Release() {
 	if instance != nil {
 		lock.Lock()
 		defer lock.Unlock()
@@ -85,5 +85,3 @@ func GetRankingInstance() *Ranking {
 	}
 	return instance
 }
-
-//////////////////////////////////////////////////////////////////////////////////////

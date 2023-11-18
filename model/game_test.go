@@ -482,7 +482,7 @@ func TestGameStop(t *testing.T) {
 
 	ranking := GetRankingInstance()
 	assert.NotNil(ranking)
-	defer ranking.release()
+	defer ranking.Release()
 	players := []Player{
 		{
 			Name:   "test1",

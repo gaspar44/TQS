@@ -4,5 +4,5 @@ import "gaspar44/TQS/model"
 
 type StorageHandler interface {
 	ReadRanking() (*model.Ranking, error)
-	WriteRanking() error
+	WriteRanking(ranking *model.Ranking) error
 }

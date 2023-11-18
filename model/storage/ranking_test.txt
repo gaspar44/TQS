@@ -1,0 +1,14 @@
+[
+    {
+        "player_name": "test 1",
+        "points": 7
+    },
+    {
+        "player_name": "test 2",
+        "points": 9
+    },
+    {
+        "player_name": "test 3",
+        "points": 10
+    }
+]
