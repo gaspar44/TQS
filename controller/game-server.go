@@ -40,5 +40,4 @@ func NewServerWithLogger(out io.Writer) *http.Server {
 
 	infoLogger.Println("Server created and running at port: " + server.Addr)
 	return &server
-
 }

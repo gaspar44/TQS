@@ -82,6 +82,8 @@ func TestCreateGame(t *testing.T) {
 
 	defer response.Body.Close()
 
+	assert.Equal("application/json", response.Header.Get("Content-Type"))
+
 	var gameResponse createGameResponse
 	decoder := json.NewDecoder(response.Body)
 	err = decoder.Decode(&gameResponse)
@@ -115,6 +117,7 @@ func TestCreateGameTwice(t *testing.T) {
 	assert.Nil(err)
 
 	defer response.Body.Close()
+	assert.Equal("application/json", response.Header.Get("Content-Type"))
 
 	var gameResponse createGameResponse
 	decoder := json.NewDecoder(response.Body)
@@ -227,6 +230,48 @@ func TestCreateGameGetMethod(t *testing.T) {
 	assert.Equal(http.MethodPost, response.Header.Get("Access-Control-Allow-Methods"))
 }
 
+func TestCreateGameOptionsMethod(t *testing.T) {
+	assert := assert2.New(t)
+
+	gameCreationRequest, err := http.NewRequest(http.MethodOptions, serverUrl+CreateGame, nil)
+	assert.Nil(err)
+
+	gameCreationRequest.Header.Set("Access-Control-Request-Headers", "content-type")
+	gameCreationRequest.Header.Set("Access-Control-Request-Method", http.MethodPost)
+	gameCreationRequest.Header.Set("Sec-Fetch-Mode", "cors")
+	gameCreationRequest.Header.Set("Sec-Fetch-Site", "same-site")
+
+	client := &http.Client{}
+	response, err := client.Do(gameCreationRequest)
+	assert.Nil(err)
+
+	defer response.Body.Close()
+
+	assert.Nil(err)
+	assert.Equal(http.StatusOK, response.StatusCode)
+	assert.Equal(http.MethodGet+" ,"+http.MethodPost, response.Header.Get("Access-Control-Allow-Methods"))
+	assert.Equal("Content-Type", response.Header.Get("Access-Control-Allow-Headers"))
+	assert.Equal("*", response.Header.Get("Access-Control-Allow-Origin"))
+}
+
+func TestDefaultLoadingPage(t *testing.T) {
+	assert := assert2.New(t)
+	defaultPageRequest, err := http.NewRequest(http.MethodGet, serverUrl, nil)
+	assert.Nil(err)
+
+	client := &http.Client{}
+	response, err := client.Do(defaultPageRequest)
+
+	assert.Nil(err)
+	message, err := io.ReadAll(response.Body)
+	assert.Nil(err)
+
+	defer response.Body.Close()
+
+	assert.Equal(http.StatusOK, response.StatusCode)
+	assert.Equal(WelcomeMessage, string(message))
+}
+
 func TestChooseCard(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "choose card"
@@ -270,6 +315,7 @@ func TestChooseCard(t *testing.T) {
 
 	assert.Nil(err)
 	assert.Equal(http.StatusOK, choseCardHttpResponse.StatusCode)
+	assert.Equal("application/json", choseCardHttpResponse.Header.Get("Content-Type"))
 
 	decoder := json.NewDecoder(choseCardHttpResponse.Body)
 
@@ -399,5 +445,40 @@ func TestChooseCardMethodUncreatedGame(t *testing.T) {
 
 	defer choseCardHttpResponse.Body.Close()
 	assert.Equal(http.StatusNotFound, choseCardHttpResponse.StatusCode)
+}
 
+func TestGetRanking(t *testing.T) {
+	assert := assert2.New(t)
+
+	getRankingRequest, err := http.NewRequest(http.MethodGet, serverUrl+GetRanking, nil)
+	assert.Nil(err)
+
+	client := &http.Client{}
+	getRankingResponse, err := client.Do(getRankingRequest)
+	assert.Nil(err)
+	assert.Equal(http.StatusOK, getRankingResponse.StatusCode)
+	assert.Equal("application/json", getRankingResponse.Header.Get("Content-Type"))
+
+	defer getRankingResponse.Body.Close()
+
+	var rankingResponse model.Ranking
+	decoder := json.NewDecoder(getRankingResponse.Body)
+	err = decoder.Decode(&rankingResponse)
+	assert.Nil(err)
+}
+
+func TestGetRankingPostMethod(t *testing.T) {
+	assert := assert2.New(t)
+
+	getRankingRequest, err := http.NewRequest(http.MethodPost, serverUrl+GetRanking, nil)
+	assert.Nil(err)
+
+	client := &http.Client{}
+	getRankingResponse, err := client.Do(getRankingRequest)
+	assert.Nil(err)
+
+	defer getRankingResponse.Body.Close()
+
+	assert.Equal(http.StatusMethodNotAllowed, getRankingResponse.StatusCode)
+	assert.Equal(http.MethodGet, getRankingResponse.Header.Get("Access-Control-Allow-Methods"))
 }

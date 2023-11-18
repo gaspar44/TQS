@@ -73,7 +73,7 @@ func (r *Ranking) Update(player Player) {
 	r.Players = r.Players[:len(r.Players)-1] // Remove the lowest rankings
 }
 
-func GetRankingInstance() (*Ranking, error) {
+func GetRankingInstance() *Ranking {
 	if instance == nil {
 		lock.Lock()
 		defer lock.Unlock()
@@ -83,7 +83,7 @@ func GetRankingInstance() (*Ranking, error) {
 				Players: nil}
 		}
 	}
-	return instance, nil
+	return instance
 }
 
 //////////////////////////////////////////////////////////////////////////////////////

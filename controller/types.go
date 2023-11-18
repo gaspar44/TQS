@@ -2,6 +2,10 @@ package controller
 
 import "gaspar44/TQS/model"
 
+const (
+	WelcomeMessage = "Welcome to the memory game!. Integration will be in other step"
+)
+
 type createGameRequest struct {
 	PlayerName     string           `json:"player_name"`
 	GameDifficulty model.Difficulty `json:"difficulty"`

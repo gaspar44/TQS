@@ -168,7 +168,7 @@ func TestGameHardModeShuffle(t *testing.T) {
 }
 
 // Unit test: Checking "ChooseCardOnBoard()" function for 1 card  (easy)
-// Equivalent Share: If i can choose 1 card, i can any
+// Equivalent Share: If I can choose 1 card, I can any
 func TestGameEasyModeSingleChooseCard(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -194,7 +194,7 @@ func TestGameEasyModeSingleChooseCard(t *testing.T) {
 }
 
 // Unit test: Checking "ChooseCardOnBoard()" function for 2 correct cards (easy)
-// Equivalent Share: If 1 can select a card, i can any (NECESARIO? No dejaria elegir la misma carta)
+// Equivalent Share: If 1 can select a card, I can any (NECESARIO? No dejaria elegir la misma carta)
 func TestGameEasyModeSameCardChose(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -218,7 +218,7 @@ func TestGameEasyModeSameCardChose(t *testing.T) {
 }
 
 // Unit test: Checking "ChooseCardOnBoard()" function for 1 card  (Hard)
-// Equivalent Share: If i can choose 1 card, i can any
+// Equivalent Share: If I can choose 1 card, I can any
 func TestGameHardModeSingleChooseCard(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -480,8 +480,7 @@ func TestGameStop(t *testing.T) {
 	assert.Equal(playerName, game.playerName)
 	assert.Equal(0, game.points)
 
-	ranking, err := GetRankingInstance()
-	assert.Nil(err)
+	ranking := GetRankingInstance()
 	assert.NotNil(ranking)
 	defer ranking.release()
 	players := []Player{
@@ -520,6 +519,36 @@ func TestGameInvalidLowerCardSelection(t *testing.T) {
 	assert.False(correctCards)
 	assert.NotNil(err)
 	assert.Equal(err.Error(), custom_errors.InvalidCardPositionErrorMessage+"-1")
+}
+
+func TestGameAlreadyInitializedError(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Easy)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.Equal(0, game.points)
+	assert.Equal(EasyDifficultyCardsTotal, len(game.GetCards()))
+	assert.True(game.initialized)
+
+	err = game.createCards(Easy)
+	assert.NotNil(err)
+	assert.Equal(err.Error(), custom_errors.GameAlreadyInitializedErrorMessage)
+}
+
+func TestShuffleWithoutGameInitializationError(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Easy)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.Equal(0, game.points)
+	game.initialized = false
+
+	game.shuffleCards()
+	assert.False(game.initialized)
 }
 
 func createCards(difficulty Difficulty) []Card {

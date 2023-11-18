@@ -22,11 +22,8 @@ var (
 // Function to create/inizialate a Game
 func NewGame(playerName string, gameDifficulty Difficulty) (*Game, error) {
 	// TODO: start the points and initialize the remaining stuff
-	ranking, err := GetRankingInstance()
+	ranking := GetRankingInstance()
 
-	if err != nil {
-		return nil, err
-	}
 	defaultCard := NewCard(-1)
 	initializationCard = selectedCard{
 		Card:     &defaultCard,
@@ -43,7 +40,7 @@ func NewGame(playerName string, gameDifficulty Difficulty) (*Game, error) {
 		endingChannel: timerChannel,
 	}
 
-	err = createdGame.createCards(gameDifficulty)
+	err := createdGame.createCards(gameDifficulty)
 	return createdGame, err
 }
 
@@ -138,11 +135,11 @@ func (g *Game) GetPoints() int {
 }
 
 func (g *Game) createCards(difficulty Difficulty) error {
-	cards := make([]Card, 0)
-
 	if g.initialized {
 		return &custom_errors.GameAlreadyInitializedError{}
 	}
+
+	cards := make([]Card, 0)
 
 	switch difficulty {
 	case Easy:

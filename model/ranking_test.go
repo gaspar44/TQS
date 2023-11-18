@@ -12,15 +12,14 @@ import (
 // Unit Test: Checking "GetRankingInstance()" function
 func TestGetRankingInstance(t *testing.T) {
 	assert := assert2.New(t)
-	ranking, err := GetRankingInstance()
+	ranking := GetRankingInstance()
 	defer ranking.release()
 
 	assert.NotNil(ranking)
-	assert.Nil(err)
+
 	assert.False(ranking.isInitialized)
 
-	ranking2, err := GetRankingInstance()
-	assert.Nil(err)
+	ranking2 := GetRankingInstance()
 	assert.Equal(ranking, ranking2)
 }
 
@@ -29,9 +28,8 @@ func TestGetRankingInstance(t *testing.T) {
 func TestInitializeRanking(t *testing.T) {
 	assert := assert2.New(t)
 
-	ranking, err := GetRankingInstance()
+	ranking := GetRankingInstance()
 	defer ranking.release()
-	assert.Nil(err)
 	assert.NotNil(ranking)
 	assert.False(ranking.isInitialized)
 
@@ -60,9 +58,8 @@ func TestInitializeRanking(t *testing.T) {
 func TestRankingInsertSamePlayerTwice(t *testing.T) {
 	assert := assert2.New(t)
 
-	ranking, err := GetRankingInstance()
+	ranking := GetRankingInstance()
 	defer ranking.release()
-	assert.Nil(err)
 	assert.NotNil(ranking)
 	assert.False(ranking.isInitialized)
 
@@ -93,9 +90,8 @@ func TestRankingInsertSamePlayerTwice(t *testing.T) {
 func TestRankingInitializationError(t *testing.T) {
 	assert := assert2.New(t)
 
-	ranking, err := GetRankingInstance()
+	ranking := GetRankingInstance()
 	defer ranking.release()
-	assert.Nil(err)
 	assert.NotNil(ranking)
 	assert.False(ranking.isInitialized)
 
@@ -112,9 +108,8 @@ func TestRankingInitializationError(t *testing.T) {
 func TestInitializeRankingMultiplesPlayers(t *testing.T) {
 	assert := assert2.New(t)
 
-	ranking, err := GetRankingInstance()
+	ranking := GetRankingInstance()
 	defer ranking.release()
-	assert.Nil(err)
 	assert.NotNil(ranking)
 	assert.False(ranking.isInitialized)
 
@@ -158,8 +153,7 @@ func TestGetRankingInstanceMultithreading(t *testing.T) {
 		go func(position int) {
 
 			defer wg.Done()
-			ranking, err := GetRankingInstance()
-			assert.Nil(err)
+			ranking := GetRankingInstance()
 			assert.NotNil(ranking)
 			rankings[position] = ranking
 		}(i)
@@ -182,9 +176,8 @@ func TestAddPlayersToRankingAtMax(t *testing.T) {
 		}
 		players[i] = newPlayer
 	}
-	ranking, err := GetRankingInstance()
+	ranking := GetRankingInstance()
 	assert.NotNil(ranking)
-	assert.Nil(err)
 	defer ranking.release()
 
 	ranking.SetPlayers(players)
@@ -205,8 +198,7 @@ func TestAddPlayersEmptyRanking(t *testing.T) {
 	assert := assert2.New(t)
 
 	for i := 0; i < maxPlayers; i++ {
-		ranking, err := GetRankingInstance()
-		assert.Nil(err)
+		ranking := GetRankingInstance()
 		assert.NotNil(ranking)
 
 		if i == 0 { // To avoid collision with other test. But defer must be called once.
@@ -237,9 +229,8 @@ func TestAddPlayersToRankingWithoutDeserve(t *testing.T) {
 		}
 		players[i] = newPlayer
 	}
-	ranking, err := GetRankingInstance()
+	ranking := GetRankingInstance()
 	assert.NotNil(ranking)
-	assert.Nil(err)
 
 	ranking.SetPlayers(players)
 	newPlayerRecord := Player{
