@@ -309,6 +309,7 @@ func TestChooseCard(t *testing.T) {
 	assert.NotEmpty(chooseCardRequestBody)
 
 	choseCardRequest, err := http.NewRequest(http.MethodPost, serverUrl+ChooseCard, bytes.NewBuffer(chooseCardRequestBody))
+	choseCardRequest.Header.Set("Content-Type", "application/json")
 	assert.Nil(err)
 
 	choseCardHttpResponse, err := client.Do(choseCardRequest)
@@ -329,6 +330,51 @@ func TestChooseCard(t *testing.T) {
 	assert.Equal(1, cardChoice.Points)
 	assert.NotEqual(createdGame.Cards[0].IsVisible, cardChoice.Cards[0].IsVisible)
 
+}
+
+func TestChooseCardUnsupportedMedia(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "choose card"
+
+	request := createGameRequest{
+		PlayerName:     playerName,
+		GameDifficulty: model.Easy,
+	}
+
+	body, err := json.Marshal(request)
+
+	gameCreationRequest, err := http.NewRequest(http.MethodPost, serverUrl+CreateGame, bytes.NewBuffer(body))
+	assert.Nil(err)
+	gameCreationRequest.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	createGameHttpResponse, err := client.Do(gameCreationRequest)
+	assert.Nil(err)
+
+	decoderGame := json.NewDecoder(createGameHttpResponse.Body)
+	defer createGameHttpResponse.Body.Close()
+
+	var createdGame createGameResponse
+	err = decoderGame.Decode(&createdGame)
+
+	assert.Nil(err)
+
+	chooseCardJsonRequest := choiceCardRequest{
+		PlayerName: playerName,
+		CardChoice: 0,
+	}
+
+	chooseCardRequestBody, err := xml.Marshal(chooseCardJsonRequest)
+	assert.Nil(err)
+	assert.NotEmpty(chooseCardRequestBody)
+
+	choseCardRequest, err := http.NewRequest(http.MethodPost, serverUrl+ChooseCard, bytes.NewBuffer(chooseCardRequestBody))
+	assert.Nil(err)
+
+	choseCardHttpResponse, err := client.Do(choseCardRequest)
+
+	assert.Nil(err)
+	assert.Equal(http.StatusUnsupportedMediaType, choseCardHttpResponse.StatusCode)
 }
 
 func TestWrongChooseCard(t *testing.T) {
@@ -369,6 +415,7 @@ func TestWrongChooseCard(t *testing.T) {
 
 	choseCardRequest, err := http.NewRequest(http.MethodPost, serverUrl+ChooseCard, bytes.NewBuffer(chooseCardRequestBody))
 	assert.Nil(err)
+	choseCardRequest.Header.Set("Content-Type", "application/json")
 
 	choseCardHttpResponse, err := client.Do(choseCardRequest)
 
@@ -414,6 +461,7 @@ func TestChooseCardMethodNotAllowed(t *testing.T) {
 
 	choseCardRequest, err := http.NewRequest(http.MethodGet, serverUrl+ChooseCard, bytes.NewBuffer(chooseCardRequestBody))
 	assert.Nil(err)
+	choseCardRequest.Header.Set("Content-Type", "application/json")
 
 	choseCardHttpResponse, err := client.Do(choseCardRequest)
 
@@ -438,6 +486,7 @@ func TestChooseCardMethodUncreatedGame(t *testing.T) {
 
 	choseCardRequest, err := http.NewRequest(http.MethodPost, serverUrl+ChooseCard, bytes.NewBuffer(chooseCardRequestBody))
 	assert.Nil(err)
+	choseCardRequest.Header.Set("Content-Type", "application/json")
 
 	client := &http.Client{}
 	choseCardHttpResponse, err := client.Do(choseCardRequest)
@@ -481,4 +530,170 @@ func TestGetRankingPostMethod(t *testing.T) {
 
 	assert.Equal(http.StatusMethodNotAllowed, getRankingResponse.StatusCode)
 	assert.Equal(http.MethodGet, getRankingResponse.Header.Get("Access-Control-Allow-Methods"))
+}
+
+func TestEndGame(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "game over"
+
+	request := createGameRequest{
+		PlayerName:     playerName,
+		GameDifficulty: model.Easy,
+	}
+
+	body, err := json.Marshal(request)
+	assert.Nil(err)
+	assert.NotEmpty(body)
+
+	gameCreationRequest, err := http.NewRequest(http.MethodPost, serverUrl+CreateGame, bytes.NewBuffer(body))
+	assert.Nil(err)
+	gameCreationRequest.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	response, err := client.Do(gameCreationRequest)
+	assert.Nil(err)
+
+	defer response.Body.Close()
+
+	endRequest := endGameRequest{
+		PlayerName: playerName,
+	}
+
+	endRequestBody, err := json.Marshal(endRequest)
+	assert.Nil(err)
+	assert.NotEmpty(endRequestBody)
+
+	endGameHttpRequest, err := http.NewRequest(http.MethodPost, serverUrl+EndGame, bytes.NewBuffer(endRequestBody))
+	assert.Nil(err)
+	endGameHttpRequest.Header.Set("Content-Type", "application/json")
+
+	gameEndResponse, err := client.Do(endGameHttpRequest)
+	assert.Nil(err)
+	defer gameEndResponse.Body.Close()
+
+	assert.Equal(http.StatusOK, gameEndResponse.StatusCode)
+	assert.Equal("application/json", gameEndResponse.Header.Get("Content-Type"))
+
+	var endResponse endGameResponse
+	decoder := json.NewDecoder(gameEndResponse.Body)
+	decoder.Decode(&endResponse)
+	assert.Equal(endRequest.PlayerName, endResponse.PlayerName)
+}
+
+func TestEndGameWrongMethod(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "game over"
+
+	request := createGameRequest{
+		PlayerName:     playerName,
+		GameDifficulty: model.Easy,
+	}
+
+	body, err := json.Marshal(request)
+	assert.Nil(err)
+	assert.NotEmpty(body)
+
+	gameCreationRequest, err := http.NewRequest(http.MethodPost, serverUrl+CreateGame, bytes.NewBuffer(body))
+	assert.Nil(err)
+	gameCreationRequest.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	response, err := client.Do(gameCreationRequest)
+	assert.Nil(err)
+
+	defer response.Body.Close()
+
+	endRequest := endGameRequest{
+		PlayerName: playerName,
+	}
+
+	endRequestBody, err := json.Marshal(endRequest)
+	assert.Nil(err)
+	assert.NotEmpty(endRequestBody)
+
+	endGameHttpRequest, err := http.NewRequest(http.MethodGet, serverUrl+EndGame, bytes.NewBuffer(endRequestBody))
+	assert.Nil(err)
+	endGameHttpRequest.Header.Set("Content-Type", "application/json")
+
+	gameEndResponse, err := client.Do(endGameHttpRequest)
+	assert.Nil(err)
+	defer gameEndResponse.Body.Close()
+
+	assert.Equal(http.StatusMethodNotAllowed, gameEndResponse.StatusCode)
+	assert.Equal(http.MethodPost, gameEndResponse.Header.Get("Access-Control-Allow-Methods"))
+}
+
+func TestEndNotCreatedGame(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "game over!"
+
+	endRequest := endGameRequest{
+		PlayerName: playerName,
+	}
+
+	endRequestBody, err := json.Marshal(endRequest)
+	assert.Nil(err)
+	assert.NotEmpty(endRequestBody)
+
+	endGameHttpRequest, err := http.NewRequest(http.MethodPost, serverUrl+EndGame, bytes.NewBuffer(endRequestBody))
+	assert.Nil(err)
+
+	endGameHttpRequest.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	gameEndResponse, err := client.Do(endGameHttpRequest)
+	assert.Nil(err)
+	defer gameEndResponse.Body.Close()
+
+	assert.Equal(http.StatusNotFound, gameEndResponse.StatusCode)
+}
+
+func TestEndGameUnsupportedMedia(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "game over!"
+
+	endRequest := endGameRequest{
+		PlayerName: playerName,
+	}
+
+	endRequestBody, err := json.Marshal(endRequest)
+	assert.Nil(err)
+	assert.NotEmpty(endRequestBody)
+
+	endGameHttpRequest, err := http.NewRequest(http.MethodPost, serverUrl+EndGame, bytes.NewBuffer(endRequestBody))
+	assert.Nil(err)
+
+	endGameHttpRequest.Header.Set("Content-Type", "text/plain")
+
+	client := &http.Client{}
+	gameEndResponse, err := client.Do(endGameHttpRequest)
+	assert.Nil(err)
+	defer gameEndResponse.Body.Close()
+
+	assert.Equal(http.StatusUnsupportedMediaType, gameEndResponse.StatusCode)
+}
+
+func TestEndGameBadRequest(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "game over!"
+
+	endRequest := endGameRequest{
+		PlayerName: playerName,
+	}
+
+	endRequestBody, err := xml.Marshal(endRequest)
+	assert.Nil(err)
+	assert.NotEmpty(endRequestBody)
+
+	endGameHttpRequest, err := http.NewRequest(http.MethodPost, serverUrl+EndGame, bytes.NewBuffer(endRequestBody))
+	assert.Nil(err)
+
+	endGameHttpRequest.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	gameEndResponse, err := client.Do(endGameHttpRequest)
+	assert.Nil(err)
+	defer gameEndResponse.Body.Close()
+
+	assert.Equal(http.StatusBadRequest, gameEndResponse.StatusCode)
 }

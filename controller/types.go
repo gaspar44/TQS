@@ -35,5 +35,5 @@ type endGameRequest struct {
 
 type endGameResponse struct {
 	PlayerName string `json:"player_name"`
-	IsFinished bool   `json:"finished"`
+	Points     int    `json:"points"`
 }

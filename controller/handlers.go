@@ -118,6 +118,12 @@ func chooseCard(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
+	if request.Header.Get("Content-Type") != "application/json" {
+		infoLogger.Println("Unsupported type:" + request.Header.Get("Content-Type"))
+		writer.WriteHeader(http.StatusUnsupportedMediaType)
+		return
+	}
+
 	var choiceRequest choiceCardRequest
 	decoder := json.NewDecoder(request.Body)
 
@@ -187,6 +193,12 @@ func endGame(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
+	if request.Header.Get("Content-Type") != "application/json" {
+		infoLogger.Println("Unsupported type:" + request.Header.Get("Content-Type"))
+		writer.WriteHeader(http.StatusUnsupportedMediaType)
+		return
+	}
+
 	var endRequest endGameRequest
 	decoder := json.NewDecoder(request.Body)
 
@@ -205,21 +217,11 @@ func endGame(writer http.ResponseWriter, request *http.Request) {
 	game := activeGames[endRequest.PlayerName]
 	endResponse := endGameResponse{
 		PlayerName: endRequest.PlayerName,
-		IsFinished: false,
+		Points:     game.GetPoints(),
 	}
 
-	encoder := json.NewEncoder(writer)
-	writer.Header().Set("Content-Type", "application/json")
-
-	for _, cards := range game.GetCards() {
-		if !cards.IsDisable { // Game not finished
-			encoder.Encode(endResponse)
-			return
-		}
-	}
-
-	endResponse.IsFinished = true
 	game.Stop()
+	delete(activeGames, endRequest.PlayerName)
 	err := rankingStorage.WriteRanking(ranking)
 
 	if err != nil {
@@ -228,5 +230,7 @@ func endGame(writer http.ResponseWriter, request *http.Request) {
 		return
 	}
 
+	encoder := json.NewEncoder(writer)
+	writer.Header().Set("Content-Type", "application/json")
 	encoder.Encode(endResponse)
 }
