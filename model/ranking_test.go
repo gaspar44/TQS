@@ -217,7 +217,7 @@ func TestAddPlayersEmptyRanking(t *testing.T) {
 }
 
 // Unit Test
-// Partition Share
+// Limit
 func TestAddPlayersToRankingWithoutDeserve(t *testing.T) {
 	assert := assert2.New(t)
 	players := make(Players, maxPlayers)

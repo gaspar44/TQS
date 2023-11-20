@@ -2,6 +2,7 @@ package model
 
 import (
 	"gaspar44/TQS/model/custom_errors"
+	"strconv"
 	"testing"
 
 	assert2 "github.com/stretchr/testify/assert"
@@ -168,7 +169,7 @@ func TestGameHardModeShuffle(t *testing.T) {
 }
 
 // Unit test: Checking "ChooseCardOnBoard()" function for 1 card  (easy)
-// Equivalent Share: If I can choose 1 card, I can any
+// Frontier
 func TestGameEasyModeSingleChooseCard(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -193,8 +194,33 @@ func TestGameEasyModeSingleChooseCard(t *testing.T) {
 	assert.NotEqual(newSelectedCard, previousSelectedCard)
 }
 
+// Frontier
+func TestGameEasyModeFrontierUpperChooseCard(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Easy)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.True(game.initialized)
+	assert.Equal(EasyDifficultyCardsTotal, len(game.GetCards()))
+	assert.Equal(0, game.points)
+	assert.Equal(-1, game.selectedCard.Card.Value)
+	assert.False(game.selectedCard.Card.IsVisible)
+	assert.False(game.selectedCard.Card.IsDisable)
+	assert.Equal(-1, game.selectedCard.Position)
+
+	previousSelectedCard := game.selectedCard
+	correctCards, err := game.ChooseCardOnBoard(EasyDifficultyCardsTotal - 1)
+	assert.True(correctCards)
+	assert.Nil(err)
+	newSelectedCard := game.selectedCard
+
+	assert.NotEqual(newSelectedCard, previousSelectedCard)
+}
+
 // Unit test: Checking "ChooseCardOnBoard()" function for 2 correct cards (easy)
-// Equivalent Share: If 1 can select a card, I can any (NECESARIO? No dejaria elegir la misma carta)
+// Equivalent Share
 func TestGameEasyModeSameCardChose(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -503,7 +529,7 @@ func TestGameStop(t *testing.T) {
 }
 
 // Unit Test: Checking card position
-// Limit values
+// Limit values lower
 func TestGameInvalidLowerCardSelection(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -518,7 +544,27 @@ func TestGameInvalidLowerCardSelection(t *testing.T) {
 	correctCards, err := game.ChooseCardOnBoard(invalidPosition)
 	assert.False(correctCards)
 	assert.NotNil(err)
-	assert.Equal(err.Error(), custom_errors.InvalidCardPositionErrorMessage+"-1")
+	assert.Equal(err.Error(), custom_errors.InvalidCardPositionErrorMessage+strconv.Itoa(invalidPosition))
+}
+
+// Unit Test: Checking card position
+// Limit values upper
+func TestGameInvalidUpperCardSelection(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Easy)
+	assert.Nil(err)
+	assert.Equal(playerName, game.playerName)
+	assert.Equal(0, game.points)
+	assert.Equal(EasyDifficultyCardsTotal, len(game.GetCards()))
+
+	invalidPosition := 45
+
+	correctCards, err := game.ChooseCardOnBoard(invalidPosition)
+	assert.False(correctCards)
+	assert.NotNil(err)
+	assert.Equal(err.Error(), custom_errors.InvalidCardPositionErrorMessage+strconv.Itoa(invalidPosition))
 }
 
 func TestGameAlreadyInitializedError(t *testing.T) {
