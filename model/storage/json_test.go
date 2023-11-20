@@ -33,6 +33,27 @@ func TestWrite(t *testing.T) {
 	assert.Nil(err)
 }
 
+func TestWriteWithoutPermissions(t *testing.T) {
+	assert := assert2.New(t)
+	ranking := model.GetRankingInstance()
+	defer ranking.Release()
+	players := []model.Player{
+		{
+			Name:   "test1",
+			Points: 1,
+		},
+		{
+			Name:   "test2",
+			Points: 10,
+		},
+	}
+
+	ranking.SetPlayers(players)
+	handler := NewJsonStorage("/etc/notPermission.txt")
+	err := handler.WriteRanking(ranking)
+	assert.NotNil(err)
+}
+
 func TestRead(t *testing.T) {
 	assert := assert2.New(t)
 	expectedPlayers := createPlayersFromFile("ranking_test.txt")
