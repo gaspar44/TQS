@@ -4,4 +4,5 @@ const (
 	CreateGame = "/createGame"
 	GetRanking = "/getRanking"
 	ChooseCard = "/chooseCard"
+	EndGame    = "/end"
 )

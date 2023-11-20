@@ -2,6 +2,7 @@ package controller
 
 import (
 	"gaspar44/TQS/model"
+	"gaspar44/TQS/model/storage"
 	"io"
 	"log"
 	"net/http"
@@ -13,8 +14,10 @@ const (
 )
 
 var (
-	infoLogger  *log.Logger
-	debugLogger *log.Logger
+	infoLogger     *log.Logger
+	debugLogger    *log.Logger
+	ranking        *model.Ranking
+	rankingStorage storage.StorageHandler
 )
 
 func NewServer() *http.Server {
@@ -37,7 +40,11 @@ func NewServerWithLogger(out io.Writer) *http.Server {
 	mux[CreateGame] = createGame
 	mux[GetRanking] = displayRanking
 	mux[ChooseCard] = chooseCard
+	mux[EndGame] = endGame
 
 	infoLogger.Println("Server created and running at port: " + server.Addr)
+	rankingStorage = storage.StorageHandler(storage.NewDefaultJsonStorage())
+	ranking, _ = rankingStorage.ReadRanking()
+	infoLogger.Println("Ranking created")
 	return &server
 }

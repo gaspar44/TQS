@@ -15,6 +15,9 @@ var (
 type defaultHandler struct{}
 
 func (handler *defaultHandler) ServeHTTP(writer http.ResponseWriter, request *http.Request) {
+	dumpHttpRequest, _ := httputil.DumpRequest(request, true)
+	debugLogger.Println(string(dumpHttpRequest))
+	defer request.Body.Close()
 	if handlerFunction, ok := mux[request.URL.Path]; ok {
 		writer.Header().Set("Access-Control-Allow-Origin", "*")
 
@@ -28,18 +31,10 @@ func (handler *defaultHandler) ServeHTTP(writer http.ResponseWriter, request *ht
 	}
 }
 func welcome(writer http.ResponseWriter, request *http.Request) {
-	dumpHttpRequest, _ := httputil.DumpRequest(request, true)
-	debugLogger.Println(string(dumpHttpRequest))
-	defer request.Body.Close()
-
 	writer.Write([]byte(WelcomeMessage))
 }
 
 func createGame(writer http.ResponseWriter, request *http.Request) {
-	dumpHttpRequest, _ := httputil.DumpRequest(request, true)
-	debugLogger.Println(string(dumpHttpRequest))
-	defer request.Body.Close()
-
 	if request.Method != http.MethodPost {
 		infoLogger.Println("Invalid http method:" + request.Method)
 		writer.Header().Set("Access-Control-Allow-Methods", http.MethodPost)
@@ -116,9 +111,6 @@ func createGame(writer http.ResponseWriter, request *http.Request) {
 }
 
 func chooseCard(writer http.ResponseWriter, request *http.Request) {
-	dumpHttpRequest, _ := httputil.DumpRequest(request, true)
-	debugLogger.Println(string(dumpHttpRequest))
-
 	if request.Method != http.MethodPost {
 		infoLogger.Println("Invalid http method:" + request.Method)
 		writer.Header().Set("Access-Control-Allow-Methods", http.MethodPost)
@@ -166,13 +158,9 @@ func chooseCard(writer http.ResponseWriter, request *http.Request) {
 		writer.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
 }
 
 func displayRanking(writer http.ResponseWriter, request *http.Request) {
-	dumpHttpRequest, _ := httputil.DumpRequest(request, true)
-	debugLogger.Println(string(dumpHttpRequest))
-
 	if request.Method != http.MethodGet {
 		infoLogger.Println("Invalid http method:" + request.Method)
 		writer.Header().Set("Access-Control-Allow-Methods", http.MethodGet)
@@ -189,4 +177,56 @@ func displayRanking(writer http.ResponseWriter, request *http.Request) {
 	if err != nil {
 		http.Error(writer, "Error on JSON ranking", http.StatusInternalServerError)
 	}
+}
+
+func endGame(writer http.ResponseWriter, request *http.Request) {
+	if request.Method != http.MethodPost {
+		infoLogger.Println("Invalid http method:" + request.Method)
+		writer.Header().Set("Access-Control-Allow-Methods", http.MethodPost)
+		writer.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
+
+	var endRequest endGameRequest
+	decoder := json.NewDecoder(request.Body)
+
+	if err := decoder.Decode(&endRequest); err != nil {
+		debugLogger.Println(err.Error())
+		http.Error(writer, "Error on decode JSON", http.StatusBadRequest)
+		return
+	}
+
+	if _, ok := activeGames[endRequest.PlayerName]; !ok {
+		infoLogger.Println("Game for player " + endRequest.PlayerName + " has not been created.")
+		http.Error(writer, "No active games for "+endRequest.PlayerName, http.StatusNotFound)
+		return
+	}
+
+	game := activeGames[endRequest.PlayerName]
+	endResponse := endGameResponse{
+		PlayerName: endRequest.PlayerName,
+		IsFinished: false,
+	}
+
+	encoder := json.NewEncoder(writer)
+	writer.Header().Set("Content-Type", "application/json")
+
+	for _, cards := range game.GetCards() {
+		if !cards.IsDisable { // Game not finished
+			encoder.Encode(endResponse)
+			return
+		}
+	}
+
+	endResponse.IsFinished = true
+	game.Stop()
+	err := rankingStorage.WriteRanking(ranking)
+
+	if err != nil {
+		debugLogger.Println(err.Error())
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	encoder.Encode(endResponse)
 }

@@ -28,3 +28,12 @@ type choiceCardResponse struct {
 	Cards      []model.Card `json:"cards"`
 	Points     int          `json:"points"`
 }
+
+type endGameRequest struct {
+	PlayerName string `json:"player_name"`
+}
+
+type endGameResponse struct {
+	PlayerName string `json:"player_name"`
+	IsFinished bool   `json:"finished"`
+}

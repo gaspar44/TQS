@@ -24,7 +24,7 @@ func NewDefaultJsonStorage() JsonStorage {
 	return NewJsonStorage(defaultStorageName)
 }
 
-func (jsStorage *JsonStorage) ReadRanking() (*model.Ranking, error) {
+func (jsStorage JsonStorage) ReadRanking() (*model.Ranking, error) {
 	if _, statErr := os.Stat(jsStorage.storageFileName); statErr == nil {
 		rawData, err := os.ReadFile(jsStorage.storageFileName)
 
@@ -37,7 +37,7 @@ func (jsStorage *JsonStorage) ReadRanking() (*model.Ranking, error) {
 		err = json.Unmarshal(rawData, &players)
 
 		if err != nil {
-			players = make(model.Players, model.MaxPlayers)
+			players = make(model.Players, 0)
 			ranking.SetPlayers(players)
 			return ranking, nil
 		}
@@ -49,8 +49,8 @@ func (jsStorage *JsonStorage) ReadRanking() (*model.Ranking, error) {
 	return model.GetRankingInstance(), nil
 }
 
-func (jsStorage *JsonStorage) WriteRanking(ranking *model.Ranking) error {
-	fileInfo, err := os.Create(defaultStorageName)
+func (jsStorage JsonStorage) WriteRanking(ranking *model.Ranking) error {
+	fileInfo, err := os.Create(jsStorage.storageFileName)
 
 	if err != nil {
 		return err

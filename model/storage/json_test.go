@@ -62,7 +62,7 @@ func TestReadWrongFormatFile(t *testing.T) {
 
 	players, err := ranking.GetPlayers()
 	assert.Nil(err)
-	assert.NotEmpty(players)
+	assert.Empty(players)
 }
 
 func TestWriteEmptyRanking(t *testing.T) {
