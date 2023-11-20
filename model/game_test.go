@@ -378,7 +378,7 @@ func TestGameHardModeWrongCardChose(t *testing.T) {
 }
 
 // Unit test: Checking "ChooseCardOnBoard()" function for 1 card (easy)
-// Equivalent Share:
+// Decision coverage
 func TestGameHardModeChoseSameCardTwice(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -530,6 +530,7 @@ func TestGameStop(t *testing.T) {
 
 // Unit Test: Checking card position
 // Limit values lower
+// Decision
 func TestGameInvalidLowerCardSelection(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -549,6 +550,7 @@ func TestGameInvalidLowerCardSelection(t *testing.T) {
 
 // Unit Test: Checking card position
 // Limit values upper
+// Decision
 func TestGameInvalidUpperCardSelection(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
