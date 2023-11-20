@@ -15,16 +15,8 @@ type JsonStorage struct {
 }
 
 func NewJsonStorage(fileName string) JsonStorage {
-	var storageToUse string
-
-	if fileName == "" {
-		storageToUse = defaultStorageName
-	} else {
-		storageToUse = fileName
-	}
-
 	return JsonStorage{
-		storageFileName: storageToUse,
+		storageFileName: fileName,
 	}
 }
 
@@ -45,6 +37,8 @@ func (jsStorage *JsonStorage) ReadRanking() (*model.Ranking, error) {
 		err = json.Unmarshal(rawData, &players)
 
 		if err != nil {
+			players = make(model.Players, model.MaxPlayers)
+			ranking.SetPlayers(players)
 			return ranking, nil
 		}
 

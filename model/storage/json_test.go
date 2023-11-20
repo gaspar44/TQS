@@ -50,6 +50,34 @@ func TestRead(t *testing.T) {
 	assert.Equal(expectedPlayers, model.Players(players))
 }
 
+func TestReadWrongFormatFile(t *testing.T) {
+	assert := assert2.New(t)
+
+	handler := NewJsonStorage("random_file.txt")
+	ranking, err := handler.ReadRanking()
+
+	assert.Nil(err)
+	assert.NotNil(ranking)
+	defer ranking.Release()
+
+	players, err := ranking.GetPlayers()
+	assert.Nil(err)
+	assert.NotEmpty(players)
+}
+
+func TestWriteEmptyRanking(t *testing.T) {
+	assert := assert2.New(t)
+
+	handler := NewJsonStorage("/tmp/empty")
+	ranking := model.GetRankingInstance()
+
+	assert.NotNil(ranking)
+	defer ranking.Release()
+
+	err := handler.WriteRanking(ranking)
+	assert.NotNil(err)
+}
+
 func TestReadFromNoExistingFile(t *testing.T) {
 	assert := assert2.New(t)
 

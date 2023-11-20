@@ -167,9 +167,9 @@ func TestGetRankingInstanceMultithreading(t *testing.T) {
 // Partition Share: If i can add a player, i can add any
 func TestAddPlayersToRankingAtMax(t *testing.T) {
 	assert := assert2.New(t)
-	players := make(Players, maxPlayers)
+	players := make(Players, MaxPlayers)
 
-	for i := 0; i < maxPlayers; i++ {
+	for i := 0; i < MaxPlayers; i++ {
 		newPlayer := Player{
 			Name:   "test " + strconv.Itoa(i),
 			Points: i + 1,
@@ -189,7 +189,7 @@ func TestAddPlayersToRankingAtMax(t *testing.T) {
 	ranking.Update(newPlayerRecord)
 	newRanking, err := ranking.GetPlayers()
 	assert.Nil(err)
-	assert.Equal(maxPlayers, len(newRanking))
+	assert.Equal(MaxPlayers, len(newRanking))
 	assert.Equal(newPlayerRecord, newRanking[0])
 }
 
@@ -197,7 +197,7 @@ func TestAddPlayersToRankingAtMax(t *testing.T) {
 func TestAddPlayersEmptyRanking(t *testing.T) {
 	assert := assert2.New(t)
 
-	for i := 0; i < maxPlayers; i++ {
+	for i := 0; i < MaxPlayers; i++ {
 		ranking := GetRankingInstance()
 		assert.NotNil(ranking)
 
@@ -220,9 +220,9 @@ func TestAddPlayersEmptyRanking(t *testing.T) {
 // Partition Share
 func TestAddPlayersToRankingWithoutDeserve(t *testing.T) {
 	assert := assert2.New(t)
-	players := make(Players, maxPlayers)
+	players := make(Players, MaxPlayers)
 
-	for i := 0; i < maxPlayers; i++ {
+	for i := 0; i < MaxPlayers; i++ {
 		newPlayer := Player{
 			Name:   "test " + strconv.Itoa(i),
 			Points: i + 1,
@@ -241,7 +241,7 @@ func TestAddPlayersToRankingWithoutDeserve(t *testing.T) {
 	ranking.Update(newPlayerRecord)
 	newRanking, err := ranking.GetPlayers()
 	assert.Nil(err)
-	assert.Equal(maxPlayers, len(newRanking))
+	assert.Equal(MaxPlayers, len(newRanking))
 
 	for player := range newRanking {
 		assert.NotEqual(player, newPlayerRecord)

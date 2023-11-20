@@ -7,7 +7,7 @@ import (
 )
 
 const (
-	maxPlayers = 10
+	MaxPlayers = 10
 )
 
 var (
@@ -53,7 +53,7 @@ func (r *Ranking) Release() {
 }
 
 func (r *Ranking) Update(player Player) {
-	if len(r.Players) < maxPlayers {
+	if len(r.Players) < MaxPlayers {
 		for _, playerInRanking := range r.Players {
 			if playerInRanking.Name == player.Name && playerInRanking.Points == player.Points {
 				return // Player already in ranking
