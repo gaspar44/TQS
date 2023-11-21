@@ -377,6 +377,7 @@ func TestChooseCardUnsupportedMedia(t *testing.T) {
 	assert.Equal(http.StatusUnsupportedMediaType, choseCardHttpResponse.StatusCode)
 }
 
+// Partition
 func TestWrongChooseCard(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "choose wrong card"
@@ -407,6 +408,53 @@ func TestWrongChooseCard(t *testing.T) {
 	chooseCardJsonRequest := choiceCardRequest{
 		PlayerName: playerName,
 		CardChoice: model.EasyDifficultyCardsTotal + 1,
+	}
+
+	chooseCardRequestBody, err := json.Marshal(chooseCardJsonRequest)
+	assert.Nil(err)
+	assert.NotEmpty(chooseCardRequestBody)
+
+	choseCardRequest, err := http.NewRequest(http.MethodPost, serverUrl+ChooseCard, bytes.NewBuffer(chooseCardRequestBody))
+	assert.Nil(err)
+	choseCardRequest.Header.Set("Content-Type", "application/json")
+
+	choseCardHttpResponse, err := client.Do(choseCardRequest)
+
+	assert.Nil(err)
+	assert.Equal(http.StatusBadRequest, choseCardHttpResponse.StatusCode)
+}
+
+// Partition
+func TestChooseInvalidCard(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "choose wrong card"
+
+	request := createGameRequest{
+		PlayerName:     playerName,
+		GameDifficulty: model.Easy,
+	}
+
+	body, err := json.Marshal(request)
+
+	gameCreationRequest, err := http.NewRequest(http.MethodPost, serverUrl+CreateGame, bytes.NewBuffer(body))
+	assert.Nil(err)
+	gameCreationRequest.Header.Set("Content-Type", "application/json")
+
+	client := &http.Client{}
+	createGameHttpResponse, err := client.Do(gameCreationRequest)
+	assert.Nil(err)
+
+	decoderGame := json.NewDecoder(createGameHttpResponse.Body)
+	defer createGameHttpResponse.Body.Close()
+
+	var createdGame createGameResponse
+	err = decoderGame.Decode(&createdGame)
+
+	assert.Nil(err)
+
+	chooseCardJsonRequest := choiceCardRequest{
+		PlayerName: playerName,
+		CardChoice: -1,
 	}
 
 	chooseCardRequestBody, err := json.Marshal(chooseCardJsonRequest)
