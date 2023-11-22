@@ -35,6 +35,16 @@ func TestNewGameEasyMode(t *testing.T) {
 	assert.Equal(expectedElements, countedElements)
 }
 
+func TestNewGameUnknownDifficulty(t *testing.T) {
+	assert := assert2.New(t)
+	playerName := "test1"
+
+	game, err := NewGame(playerName, Difficulty(3))
+	assert.Nil(game)
+	assert.NotNil(err)
+	assert.Equal(custom_errors.UnknownDifficultyErrorMessage, err.Error())
+}
+
 // Unit test: Checking "NewGame()" function (Medium)
 // Test de cobertura (easy)
 func TestNewGameMediumMode(t *testing.T) {

@@ -41,6 +41,11 @@ func NewGame(playerName string, gameDifficulty Difficulty) (*Game, error) {
 	}
 
 	err := createdGame.createCards(gameDifficulty)
+
+	if err != nil {
+		return nil, err
+	}
+
 	return createdGame, err
 }
 
@@ -139,30 +144,24 @@ func (g *Game) createCards(difficulty Difficulty) error {
 		return &custom_errors.GameAlreadyInitializedError{}
 	}
 
-	cards := make([]Card, 0)
-
+	var totalCardsToCreate int
 	switch difficulty {
 	case Easy:
-		for i := 0; i < EasyDifficultyCardsTotal/2; i++ {
-			newCard := NewCard(i)
-			newCardPair := NewCard(i)
-			cards = append(cards, newCard)
-			cards = append(cards, newCardPair)
-		}
+		totalCardsToCreate = EasyDifficultyCardsTotal / 2
 	case Medium:
-		for i := 0; i < MediumDifficultyCardsTotal/2; i++ {
-			newCard := NewCard(i)
-			newCardPair := NewCard(i)
-			cards = append(cards, newCard)
-			cards = append(cards, newCardPair)
-		}
+		totalCardsToCreate = MediumDifficultyCardsTotal / 2
 	case Hard:
-		for i := 0; i < HardDifficultyCardsTotal/2; i++ {
-			newCard := NewCard(i)
-			newCardPair := NewCard(i)
-			cards = append(cards, newCard)
-			cards = append(cards, newCardPair)
-		}
+		totalCardsToCreate = HardDifficultyCardsTotal / 2
+	default:
+		return &custom_errors.UnknownDifficultyError{}
+	}
+
+	cards := make([]Card, 0)
+	for i := 0; i < totalCardsToCreate; i++ {
+		newCard := NewCard(i)
+		newCardPair := NewCard(i)
+		cards = append(cards, newCard)
+		cards = append(cards, newCardPair)
 	}
 
 	g.cards = cards

@@ -4,4 +4,5 @@ const (
 	RankingInitializationErrorMessage  = "Ranking not initialized"
 	GameAlreadyInitializedErrorMessage = "Game already initialized"
 	InvalidCardPositionErrorMessage    = "Card out of limits: "
+	UnknownDifficultyErrorMessage      = "Unknown difficulty selected "
 )
