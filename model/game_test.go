@@ -230,7 +230,6 @@ func TestGameEasyModeFrontierUpperChooseCard(t *testing.T) {
 }
 
 // Unit test: Checking "ChooseCardOnBoard()" function for 2 correct cards (easy)
-// Equivalent Share
 func TestGameEasyModeSameCardChose(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -254,7 +253,6 @@ func TestGameEasyModeSameCardChose(t *testing.T) {
 }
 
 // Unit test: Checking "ChooseCardOnBoard()" function for 1 card  (Hard)
-// Equivalent Share: If I can choose 1 card, I can any
 func TestGameHardModeSingleChooseCard(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -280,7 +278,6 @@ func TestGameHardModeSingleChooseCard(t *testing.T) {
 }
 
 // Unit test: Checking "ChooseCardOnBoard()" function for 1 card (easy)
-// Equivalent Share: If 1 pair of cards are not equal, another pair can also not be
 func TestGameEasyModeWrongCardChose(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -316,7 +313,6 @@ func TestGameEasyModeWrongCardChose(t *testing.T) {
 }
 
 // Unit test: Checking "ChooseCardOnBoard()" function for 1 card (Medium)
-// Equivalent Share: If 1 pair of cards are not equal, another pair can also not be
 func TestGameMediumModeWrongCardChose(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -352,7 +348,6 @@ func TestGameMediumModeWrongCardChose(t *testing.T) {
 }
 
 // Unit test: Checking "ChooseCardOnBoard()" function for 1 card (Hard)
-// Equivalent Share: If 1 pair of cards are not equal, another pair can also not be
 func TestGameHardModeWrongCardChose(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -421,7 +416,6 @@ func TestGameHardModeChoseSameCardTwice(t *testing.T) {
 }
 
 // Unit test: Checking "ChooseCardOnBoard()" function for 1 card (easy)
-// Equivalent Share: If 1 pair of cards are equal, another pair can also be
 func TestGameCorrectCards(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
@@ -462,7 +456,6 @@ func TestGameCorrectCards(t *testing.T) {
 }
 
 // Unit test: Checking "ChooseCardOnBoard()" function for 1 card (easy)
-// Equivalent Share:
 func TestGameSelectDisabledCard(t *testing.T) {
 	assert := assert2.New(t)
 	playerName := "test1"
