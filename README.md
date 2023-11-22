@@ -1,12 +1,13 @@
 # Memory game
 
 This will be a simple memory game server written in Go.
-[Docker](https://www.docker.com/) and [docker compose](https://docs.docker.com/compose/) are needed in order to execute the server.
+[Docker](https://www.docker.com/) and [docker compose](https://docs.docker.com/compose/install/linux/) are needed in order to execute the server.
 
 ### Compilation instructions
 1. Download Go 1.21.2 from the [Official Page](https://go.dev/doc/install).
 2. Compile by running in the root folder `go build -o cmd/server main/main.go`
-3. Execute by running the `./cmd/server`. This will deploy the game and will be running in the port 8080.
+3. Execute by running the `./cmd/server`. This will deploy the game and will be running in the port 8080, without GUI.
+4. To execute the whole game with the default GUI, execute the command `docker compose up -d`
 
 ### Executing test
 The Golang language, by convention, to execute unit/integration tests, needs to be in the same package as the testable function as `fileName_test.go`. An example should be [docker](https://github.com/moby/moby/blob/master/cmd/dockerd).
