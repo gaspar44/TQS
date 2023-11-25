@@ -1,149 +1,47 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="UTF-8">
-        <title>Cards Game</title>
-        <link rel="stylesheet" type="text/css" href="style.css">
-    </head>
-    <body>
-    <div id="name_dificulty">
-        <input type="text" id="player_name" placeholder="Your name: ">
-        <select id="difficulty">
-            <option id="easy" value=0>Easy</option>
-            <option id="medium" value=1>Medium</option>
-            <option id="hard" value=2>Hard</option>
-        </select>
-        <button id="start_game">Start Game!</button>
+<head>
+    <meta charset="UTF-8">
+    <title>Cards Game</title>
+    <link rel="stylesheet" href="style/css/bootstrap.min.css" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+<div class="container p-3 mt-2">
+    <div id="name_dificulty" class="row">
+        <div class="col-6">
+            <input type="text" id="player_name" placeholder="Your name: " class="form-control">
+        </div>
+        <div class="col-2">
+            <select id="difficulty" class="form-control">
+                <option id="easy" value=0>Easy</option>
+                <option id="medium" value=1>Medium</option>
+                <option id="hard" value=2>Hard</option>
+            </select>
+        </div>
+        <div class="col-4">
+            <button id="start_game" class="form-control">Start Game!</button>
+        </div>
     </div>
 
-        <div id="board">
-            <!-- Easy -->
-            <table id="game_board_easy">
-                <tr id="first_row_easy">
-                    <th id="easy_player_name"> <!-- Player Name --> </th>
-                </tr>
-                <tr id="second_row_easy">
-                    <td>                        
-                        <button id="card_easy_0" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_easy_1" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_easy_2" data-card-value=""></button>
-                    </td>
-                </tr>
-                <tr id="third_row_easy">
-                    <td>                       
-                       <button id="card_easy_3" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_easy_4" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_easy_5" data-card-value=""></button>
-                    </td>
-                </tr>
-            </table>
-            <!-- Medium -->
-            <table id="game_board_medium">
-                <tr id="first_row_medium">
-                    <th id="medium_player_name"> <!-- Player Name --> </th>
-                </tr>
-                <tr id="second_row_medium">
-                    <td>                        
-                        <button id="card_medium_0" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_medium_1" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_medium_2" data-card-value=""></button>
-                    </td>
-                    <td>                       
-                       <button id="card_medium_3" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_medium_4" data-card-value=""></button>
-                    </td>
-                </tr>
-                <tr id="third_row_medium">
-                    <td>                        
-                        <button id="card_medium_5" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_medium_6" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_medium_7" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_medium_8" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_medium_9" data-card-value=""></button>
-                    </td>
-                </tr>
-            </table>
-            <!-- Hard -->
-            <table id="game_board_hard">
-                <tr id="first_row_hard">
-                    <th id="hard_player_name"> <!-- Player Name --> </th>
-                </tr>
-                <tr id="second_row_hard">
-                    <td>
-                        <button id="card_hard_0" data-card-value=""></button>
-                    </td>
-                    <td>
-                        <button id="card_hard_1" data-card-value=""></button>
-                    </td>
-                    <td>
-                        <button id="card_hard_2" data-card-value=""></button>
-                    </td>
-                    <td>
-                       <button id="card_hard_3" data-card-value=""></button>
-                    </td>
-                    <td>
-                        <button id="card_hard_4" data-card-value=""></button>
-                    </td>
-                    <td>
-                        <button id="card_hard_5" data-card-value=""></button>
-                    </td>
-                    <td>
-                        <button id="card_hard_6" data-card-value=""></button>
-                    </td>
-                    <td>
-                        <button id="card_hard_7" data-card-value=""></button>
-                    </td>
-                </tr>
-                <tr id="third_row_hard">
-                    <td>
-                        <button id="card_hard_8" data-card-value=""></button>
-                    </td>
-                    <td>
-                        <button id="card_hard_9" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_hard_10" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_hard_11" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_hard_12" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_hard_13" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_hard_14" data-card-value=""></button>
-                    </td>
-                    <td>                        
-                        <button id="card_hard_15" data-card-value=""></button>
-                    </td>
-                </tr>
-            </table>
-        </div>
-    <script src="controller.js"></script>
-    </body>
+    <div id="board" class="row mt-4">
+        <table id="game_board" class="table">
+            <tbody id="tableBody">
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <button id="endGameButton" class="btn btn-danger" onclick="handleEnd()" style="display: none">End Game</button>
+    </div>
+
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="style/js/bootstrap.min.js" crossorigin="anonymous"></script>
+<script src="controller.js"></script>
+</body>
 </html>
